@@ -1,0 +1,14 @@
+<%@ Page Title="Guida utente" Language="C#" MasterPageFile="~/Site.Master" Inherits="WebGestPersV2.HomePage" %>
+<asp:Content ID="Title" ContentPlaceHolderID="TitleContent" runat="server">Guida utente</asp:Content>
+<asp:Content ID="Main" ContentPlaceHolderID="MainContent" runat="server">
+ <a class="back-link" href="Default.aspx">← Torna all’Help</a>
+ <div class="page-heading"><p class="eyebrow">Guida per l’utilizzatore</p><h1>Utilizzare WebGestPers</h1><p>Indicazioni essenziali per consultare correttamente le informazioni sul personale.</p></div>
+ <nav class="section-nav" aria-label="Argomenti della guida"><a href="#accesso">Accesso</a><a href="#ricerca">Ricerca</a><a href="#profilo">Profilo</a><a href="#incarichi">Incarichi</a><a href="#sicurezza">Sicurezza</a></nav>
+ <div class="guide-content">
+  <section id="accesso" class="card detail-section anchor-section"><h2>Accesso all’applicazione</h2><p>L’accesso utilizza l’identità Windows. Le funzioni disponibili dipendono dal livello associato all’utente nella tabella delle autorizzazioni. Se non si dispone del livello necessario viene mostrata la pagina di accesso negato.</p></section>
+  <section id="ricerca" class="card detail-section anchor-section"><h2>Ricercare il personale</h2><p>Dalla pagina principale selezionare <strong>Apri elenco personale</strong>. L’elenco iniziale comprende il personale con stato di servizio attivo. È possibile cercare per cognome, nome o codice fiscale.</p><p>La colonna <strong>Grado/Profilo</strong> mostra il grado per il personale militare e la sigla del profilo professionale per il personale civile.</p></section>
+  <section id="profilo" class="card detail-section anchor-section"><h2>Consultare un profilo</h2><p>Selezionare una persona dall’elenco per aprirne il dettaglio. I collegamenti nella parte superiore consentono di raggiungere rapidamente dati generali, dati sensibili, profilo, incarichi, storico e note.</p><p>Il profilo militare contiene grado, forza armata, posizione, categoria, ruolo e specialità. Il profilo civile contiene le informazioni di assunzione e il profilo professionale attuale.</p></section>
+  <section id="incarichi" class="card detail-section anchor-section"><h2>Incarichi e storico</h2><p>La sezione <strong>Incarichi</strong> presenta gli incarichi attualmente associati alla persona, l’eventuale incarico principale, la data iniziale e l’articolazione organizzativa. Lo <strong>Storico incarichi</strong> contiene gli incarichi conclusi con le relative date.</p></section>
+  <section id="sicurezza" class="card detail-section anchor-section"><h2>Dati e sicurezza</h2><p>I dati personali e sensibili devono essere consultati esclusivamente per finalità di servizio. Non condividere schermate, stampe o informazioni con utenti non autorizzati. Al termine dell’attività chiudere il browser o bloccare la sessione Windows.</p></section>
+ </div>
+</asp:Content>

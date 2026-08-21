@@ -7,6 +7,7 @@ namespace WebGestPersV2.Personale
         protected global::System.Web.UI.WebControls.Panel DetailsPanel;
         protected global::System.Web.UI.WebControls.Image ProfilePhoto;
         protected global::System.Web.UI.WebControls.HyperLink EditLink;
+        protected global::System.Web.UI.WebControls.HyperLink AssignmentsEditLink;
         protected global::System.Web.UI.WebControls.Literal PersonnelType, FullName, PersonnelId, TaxCode, Gender, ServiceStatus;
         protected global::System.Web.UI.WebControls.Literal OfficePhone, Room, SourceOrganization, AssignmentDate, ExitDate;
         protected global::System.Web.UI.WebControls.Literal BirthDate, BirthTown, MaritalStatus, MobilePhone;

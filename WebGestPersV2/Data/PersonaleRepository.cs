@@ -38,7 +38,8 @@ namespace WebGestPersV2.Data
         public IList<IncaricoListaItem> CercaIncarichi(int idPersonale)
         {
             const string sql = @"SELECT i.id_incarico, ti.Descr_incarico, i.principale,
-                                        i.Data_inizio, l1.SgUff1, l2.SgUff2, l3.SgUff3
+                                        i.Data_inizio, l1.SgUff1, l2.SgUff2, l3.SgUff3,
+                                        i.id_tipo_incarico, i.ID_Uff1, i.ID_Uff2, i.ID_Uff3
                                  FROM dbo.Incarichi AS i
                                  INNER JOIN dbo.Tipo_incarichi AS ti
                                      ON i.id_tipo_incarico = ti.id_tipo_incarico
@@ -64,7 +65,9 @@ namespace WebGestPersV2.Data
                         risultati.Add(new IncaricoListaItem {
                             IdIncarico = reader.GetInt32(0), Descrizione = Testo(reader, 1),
                             Principale = !reader.IsDBNull(2) && reader.GetBoolean(2), DataInizio = Data(reader, 3),
-                            UfficioLivello1 = Testo(reader, 4), UfficioLivello2 = Testo(reader, 5), UfficioLivello3 = Testo(reader, 6)
+                            UfficioLivello1 = Testo(reader, 4), UfficioLivello2 = Testo(reader, 5), UfficioLivello3 = Testo(reader, 6),
+                            IdTipoIncarico = reader.GetInt32(7), IdUfficio1 = InteroNullable(reader, 8),
+                            IdUfficio2 = InteroNullable(reader, 9), IdUfficio3 = InteroNullable(reader, 10)
                         });
                     }
                 }

@@ -56,6 +56,8 @@ namespace WebGestPersV2.Personale
             int livello = UtenteCorrente.Livello;
             EditLink.Visible = livello == 200 || livello == 170 || (p.Militare && livello == 150) || (!p.Militare && livello == 160);
             EditLink.NavigateUrl = "Modifica.aspx?id=" + p.IdPersonale;
+            AssignmentsEditLink.Visible = EditLink.Visible;
+            AssignmentsEditLink.NavigateUrl = "Incarichi.aspx?id=" + p.IdPersonale;
             PersonnelId.Text = p.IdPersonale.ToString(); TaxCode.Text = Valore(p.CodiceFiscale); Gender.Text = Valore(p.Sesso);
             ServiceStatus.Text = Valore(p.StatoServizio); OfficePhone.Text = Valore(p.TelefonoUfficio); Room.Text = Valore(p.NumeroStanza);
             SourceOrganization.Text = Valore(p.EnteProvenienza);

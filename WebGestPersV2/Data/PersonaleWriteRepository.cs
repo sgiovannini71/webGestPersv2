@@ -20,7 +20,7 @@ namespace WebGestPersV2.Data
                     try
                     {
                         var vecchi = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                        using (var q = new SqlCommand("SELECT Cognome,Nome,CodiceFiscale,EnteProvenienza,Data_Ass_Armaereo,TelefonoUfficio,NumeroStanza,id_Tit_Studio,IDFasciaOraria FROM dbo.ElencoPersonale WITH (UPDLOCK) WHERE IDPersonale=@id", connection, tx))
+                        using (var q = new SqlCommand("SELECT Cognome,Nome,CodiceFiscale,EnteProvenienza,Data_Ass_Armaereo,TelefonoUfficio,NumeroStanza,id_Tit_Studio,IDFasciaOraria,Stato_Servizio,Data_Usc_Armaereo FROM dbo.ElencoPersonale WITH (UPDLOCK) WHERE IDPersonale=@id", connection, tx))
                         {
                             q.Parameters.Add("@id", SqlDbType.Int).Value = dati.IdPersonale;
                             using (var r = q.ExecuteReader(CommandBehavior.SingleRow))
@@ -36,6 +36,7 @@ namespace WebGestPersV2.Data
                                 throw new InvalidOperationException("Codice fiscale già associato a un'altra persona.");
                         }
                         DateTime ora=DateTime.Now;
+                        AggiornaStatoServizio(connection,tx,dati,vecchi,ora,modificatoDa);
                         Esegui(connection,tx,@"UPDATE dbo.ElencoPersonale SET Cognome=@c,Nome=@n,CodiceFiscale=@cf,EnteProvenienza=@ente,Data_Ass_Armaereo=@data,TelefonoUfficio=@tel,NumeroStanza=@stanza,id_Tit_Studio=@titolo,IDFasciaOraria=@fascia,Data_Versione_Profilo=@ora WHERE IDPersonale=@id",
                             P("@c",SqlDbType.VarChar,30,dati.Cognome),P("@n",SqlDbType.VarChar,30,dati.Nome),P("@cf",SqlDbType.VarChar,16,dati.CodiceFiscale),P("@ente",SqlDbType.VarChar,50,dati.EnteProvenienza),P("@data",SqlDbType.DateTime,dati.DataAssegnazione.HasValue?(object)dati.DataAssegnazione.Value:DBNull.Value),P("@tel",SqlDbType.VarChar,15,dati.TelefonoUfficio),P("@stanza",SqlDbType.VarChar,5,dati.NumeroStanza),P("@titolo",SqlDbType.Int,dati.IdTitoloStudio.HasValue?(object)dati.IdTitoloStudio.Value:DBNull.Value),P("@fascia",SqlDbType.Int,dati.IdFasciaOraria.HasValue?(object)dati.IdFasciaOraria.Value:DBNull.Value),P("@ora",SqlDbType.DateTime,ora),P("@id",SqlDbType.Int,dati.IdPersonale));
                         var nuovi=new Dictionary<string,string>{{"Cognome",dati.Cognome},{"Nome",dati.Nome},{"CodiceFiscale",dati.CodiceFiscale},{"EnteProvenienza",dati.EnteProvenienza},{"Data_Ass_Armaereo",dati.DataAssegnazione.HasValue?dati.DataAssegnazione.Value.ToString("s"):""},{"TelefonoUfficio",dati.TelefonoUfficio},{"NumeroStanza",dati.NumeroStanza},{"id_Tit_Studio",dati.IdTitoloStudio.HasValue?dati.IdTitoloStudio.Value.ToString():""},{"IDFasciaOraria",dati.IdFasciaOraria.HasValue?dati.IdFasciaOraria.Value.ToString():""}};
@@ -49,6 +50,37 @@ namespace WebGestPersV2.Data
             }
         }
         private static bool ValoriUguali(string a,string b){DateTime da,db;if(DateTime.TryParse(a,out da)&&DateTime.TryParse(b,out db))return da==db;return string.Equals((a??"").Trim(),(b??"").Trim(),StringComparison.Ordinal);}
+
+        private static void AggiornaStatoServizio(SqlConnection c,SqlTransaction t,ModificaPersonaleRequest d,Dictionary<string,string> vecchi,DateTime ora,string utente)
+        {
+            string precedente=(vecchi["Stato_Servizio"]??"").Trim();
+            string nuovo=(d.StatoServizio??"").Trim();
+            if(string.IsNullOrWhiteSpace(nuovo))throw new InvalidOperationException("Selezionare lo stato di servizio.");
+            if(Scalar<int>(c,t,"SELECT COUNT(*) FROM dbo.StatoServizio WHERE RTRIM(StatoServizio)=@stato",P("@stato",SqlDbType.NVarChar,20,nuovo))!=1)
+                throw new InvalidOperationException("Stato di servizio non valido.");
+            if(string.Equals(precedente,nuovo,StringComparison.OrdinalIgnoreCase))return;
+
+            bool uscita=string.Equals(precedente,"attivo",StringComparison.OrdinalIgnoreCase)&&!string.Equals(nuovo,"attivo",StringComparison.OrdinalIgnoreCase);
+            if(uscita&&(!d.DataUscita.HasValue||!d.DataChiusuraIncarichi.HasValue))
+                throw new InvalidOperationException("Indicare la data di uscita e la data di chiusura degli incarichi.");
+            if(uscita)
+            {
+                Esegui(c,t,@"INSERT dbo.StoricoIncarichi(IDpersonale,Incarico,principale,data_inizio,date_fine)
+                    SELECT i.IDPersonale,LEFT(RTRIM(ISNULL(ti.Sigla_incarico,''))+' '+RTRIM(ISNULL(u1.SgUff1,''))+' '+RTRIM(ISNULL(u2.SgUff2,''))+' '+RTRIM(ISNULL(u3.SgUff3,'')),306),i.principale,i.Data_inizio,@fine
+                    FROM dbo.Incarichi i LEFT JOIN dbo.Tipo_incarichi ti ON ti.id_tipo_incarico=i.id_tipo_incarico
+                    LEFT JOIN dbo.Liv1Uff u1 ON u1.ID_Uff1=i.ID_Uff1 LEFT JOIN dbo.Liv2Uff u2 ON u2.ID_Uff2=i.ID_Uff2
+                    LEFT JOIN dbo.Liv3Uff u3 ON u3.ID_Uff3=i.ID_Uff3 WHERE i.IDPersonale=@id",
+                    P("@fine",SqlDbType.DateTime,d.DataChiusuraIncarichi.Value),P("@id",SqlDbType.Int,d.IdPersonale));
+                Esegui(c,t,"DELETE dbo.Incarichi WHERE IDPersonale=@id",P("@id",SqlDbType.Int,d.IdPersonale));
+            }
+            DateTime? dataUscita=uscita?d.DataUscita:(string.Equals(nuovo,"attivo",StringComparison.OrdinalIgnoreCase)?null:d.DataUscita);
+            Esegui(c,t,"UPDATE dbo.ElencoPersonale SET Stato_Servizio=@stato,Data_Usc_Armaereo=@uscita WHERE IDPersonale=@id",
+                P("@stato",SqlDbType.VarChar,50,nuovo),P("@uscita",SqlDbType.DateTime,dataUscita.HasValue?(object)dataUscita.Value:DBNull.Value),P("@id",SqlDbType.Int,d.IdPersonale));
+            Esegui(c,t,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,'Stato_Servizio',@ora,@utente,@prima,@dopo)",
+                P("@id",SqlDbType.Int,d.IdPersonale),P("@ora",SqlDbType.DateTime,ora),P("@utente",SqlDbType.VarChar,255,utente),P("@prima",SqlDbType.VarChar,255,precedente),P("@dopo",SqlDbType.VarChar,255,nuovo));
+            if(uscita)Esegui(c,t,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,'Data_Usc_Armaereo',@ora,@utente,@prima,@dopo)",
+                P("@id",SqlDbType.Int,d.IdPersonale),P("@ora",SqlDbType.DateTime,ora),P("@utente",SqlDbType.VarChar,255,utente),P("@prima",SqlDbType.VarChar,255,vecchi["Data_Usc_Armaereo"]),P("@dopo",SqlDbType.VarChar,255,d.DataUscita.Value.ToString("s")));
+        }
 
         private static void AggiornaProfiloMilitare(SqlConnection c, SqlTransaction t, ModificaPersonaleRequest d, DateTime ora, string utente)
         {
@@ -119,6 +151,7 @@ namespace WebGestPersV2.Data
 
         public IList<LookupItem> TitoliStudio() { return Leggi("SELECT id_Tit_Studio, Desc_Tit_Studio FROM dbo.Titoli_Studio ORDER BY Desc_Tit_Studio"); }
         public IList<LookupItem> FasceOrarie() { return Leggi("SELECT IDFascia, Descrizione FROM dbo.TipoFascia ORDER BY Descrizione"); }
+        public IList<LookupItem> StatiServizio() { return Leggi("SELECT RTRIM(StatoServizio), RTRIM(StatoServizio) FROM dbo.StatoServizio ORDER BY idStatoServizio"); }
         public IList<LookupItem> TitoliCivili() { return Leggi("SELECT ID_Titolo, Sigla_titolo + ' - ' + ISNULL(Descr, '') FROM dbo.Titoli ORDER BY Descr"); }
         public IList<LookupItem> ForzeArmate() { return Leggi("SELECT ID_Arma, RTRIM(SiglaArma) + ' - ' + ISNULL(DescArma, '') FROM dbo.FFAA ORDER BY livello"); }
         public IList<LookupItem> Asl() { return Leggi("SELECT id_Asl, Nome_Asl + CASE WHEN ISNULL(Indirizzo_Asl,'')='' THEN '' ELSE ' ('+Indirizzo_Asl+')' END FROM dbo.ASL ORDER BY Nome_Asl"); }

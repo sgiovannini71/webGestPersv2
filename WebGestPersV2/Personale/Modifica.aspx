@@ -16,6 +16,11 @@
   <label>Titolo di studio</label><asp:DropDownList ID="EducationTitle" runat="server" /><span></span>
   <label>Fascia oraria</label><asp:DropDownList ID="TimeBand" runat="server" /><span></span>
  </div></section>
+ <section class="card form-card detail-section"><h2>Stato di servizio</h2><p class="message error">Attenzione: passando da <strong>attivo</strong> a qualsiasi altro stato, tutti gli incarichi vengono chiusi e trasferiti nello storico.</p><div class="edit-grid">
+  <label>Stato di servizio*</label><asp:DropDownList ID="ServiceStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ServiceStatus_Changed" /><span></span>
+  <label>Data di uscita</label><asp:TextBox ID="ExitDate" runat="server" TextMode="Date" /><span>Obbligatoria quando si lascia lo stato attivo.</span>
+  <label>Data chiusura incarichi</label><asp:TextBox ID="AssignmentsClosingDate" runat="server" TextMode="Date" /><span>Applicata a tutti gli incarichi attivi.</span>
+ </div></section>
  <asp:Panel ID="MilitaryPanel" runat="server" CssClass="card form-card detail-section" Visible="false"><h2>Profilo militare</h2><div class="edit-grid">
   <label>Posizione/Stato*</label><asp:DropDownList ID="MilitaryPosition" runat="server" /><span></span>
   <label>Forza armata*</label><asp:DropDownList ID="ArmedForce" runat="server" AutoPostBack="true" OnSelectedIndexChanged="MilitaryFilter_Changed" /><span></span>
@@ -46,5 +51,5 @@
   <label>Fascia dirigenziale</label><asp:DropDownList ID="ManagementBand" runat="server"><asp:ListItem Value="n/a">n/a</asp:ListItem><asp:ListItem Value="1^">1^</asp:ListItem><asp:ListItem Value="2^">2^</asp:ListItem></asp:DropDownList><span></span>
   <label>Fascia retributiva dirigenti</label><asp:DropDownList ID="PayBand" runat="server"><asp:ListItem Value="n/a">n/a</asp:ListItem><asp:ListItem Value="1^">1^</asp:ListItem><asp:ListItem Value="2^">2^</asp:ListItem><asp:ListItem Value="3^">3^</asp:ListItem><asp:ListItem Value="4^">4^</asp:ListItem><asp:ListItem Value="5^">5^</asp:ListItem><asp:ListItem Value="6^">6^</asp:ListItem><asp:ListItem Value="7^">7^</asp:ListItem></asp:DropDownList><span></span>
  </div></asp:Panel>
- <div class="form-actions"><asp:Button ID="SaveButton" runat="server" Text="Salva modifiche" CssClass="button" ValidationGroup="edit" OnClick="SaveButton_Click" /><asp:HyperLink ID="CancelLink" runat="server" CssClass="button secondary">Annulla</asp:HyperLink></div>
+ <div class="form-actions"><asp:Button ID="SaveButton" runat="server" Text="Salva modifiche" CssClass="button" ValidationGroup="edit" OnClick="SaveButton_Click" /><asp:HyperLink ID="AssignmentsLink" runat="server" CssClass="button secondary">Gestisci incarichi</asp:HyperLink><asp:HyperLink ID="CancelLink" runat="server" CssClass="button secondary">Annulla</asp:HyperLink></div>
 </asp:Content>

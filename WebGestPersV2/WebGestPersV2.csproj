@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\site.css" />
+    <Content Include="Content\help.css" />
+    <Content Include="Content\report.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Account\AccessoNegato.aspx" />
@@ -56,8 +58,21 @@
     <Content Include="Personale\Dettaglio.aspx" />
     <Content Include="Personale\Nuovo.aspx" />
     <Content Include="Personale\Modifica.aspx" />
+    <Content Include="Personale\Incarichi.aspx" />
     <Content Include="Gestione\Indice.aspx" />
     <Content Include="Gestione\Tabella.aspx" />
+    <Content Include="Help\Default.aspx" />
+    <Content Include="Help\Utente.aspx" />
+    <Content Include="Help\Amministrazione.aspx" />
+    <Content Include="Report\Indice.aspx" />
+    <Content Include="Report\InOut.aspx" />
+    <Content Include="Report\Chart.aspx" />
+    <Content Include="Report\Ttoo.aspx" />
+    <Content Include="Report\TtooPosizioni.aspx" />
+    <Content Include="Report\TtooConsistenza.aspx" />
+    <Content Include="Report\Feo.aspx" />
+    <Content Include="Report\FeoDistribuzione.aspx" />
+    <Content Include="Report\FeoCruscotto.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Db.cs" />
@@ -88,6 +103,7 @@
     <Compile Include="Models\ModificaPersonaleRequest.cs" />
     <Compile Include="Models\LookupItem.cs" />
     <Compile Include="Models\IncaricoListaItem.cs" />
+    <Compile Include="Models\ModificaIncaricoRequest.cs" />
     <Compile Include="Models\StoricoIncaricoListaItem.cs" />
     <Compile Include="Models\TabellaGestioneDefinizione.cs" />
     <Compile Include="Gestione\Indice.aspx.cs">
@@ -125,6 +141,14 @@
     <Compile Include="Personale\Modifica.aspx.designer.cs">
       <DependentUpon>Modifica.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Personale\Incarichi.aspx.cs">
+      <DependentUpon>Incarichi.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Personale\Incarichi.aspx.designer.cs">
+      <DependentUpon>Incarichi.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Data\IncarichiWriteRepository.cs" />
     <Compile Include="Security\CodiceFiscaleParser.cs" />
     <Compile Include="Personale\Elenco.aspx.cs">
       <DependentUpon>Elenco.aspx</DependentUpon>
@@ -157,7 +181,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50241/</IISUrl>
+          <IISUrl>http://localhost:50284/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

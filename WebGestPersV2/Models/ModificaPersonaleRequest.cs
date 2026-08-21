@@ -14,6 +14,9 @@ namespace WebGestPersV2.Models
         public string NumeroStanza { get; set; }
         public int? IdTitoloStudio { get; set; }
         public int? IdFasciaOraria { get; set; }
+        public string StatoServizio { get; set; }
+        public DateTime? DataUscita { get; set; }
+        public DateTime? DataChiusuraIncarichi { get; set; }
         public bool Militare { get; set; }
         public int? IdForzaArmata { get; set; }
         public int? IdGrado { get; set; }

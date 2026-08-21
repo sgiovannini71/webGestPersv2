@@ -4,7 +4,17 @@
     <section class="hero">
         <p class="eyebrow">Nuova applicazione</p>
         <h1>Gestione del personale</h1>
-        <p>Prima approssimazione della nuova WebGestPers, compatibile con Visual Studio 2019.</p>
-        <a class="button" href="Personale/Elenco.aspx">Apri elenco personale</a>
+        <p>Gestione delle informazioni anagrafiche, dei profili e degli incarichi del personale.</p>
+        <div class="home-actions"><a class="button" href="Personale/Elenco.aspx">Apri elenco personale</a><a class="button secondary" href="Help/Default.aspx">Help</a></div>
+    </section>
+    <section class="home-reports" aria-labelledby="reports-title">
+        <div class="section-heading"><p class="eyebrow">Analisi ed esportazioni</p><h2 id="reports-title">Report</h2><p>Prospetti operativi derivati dai report della versione legacy.</p></div>
+        <div class="report-card-grid">
+            <a class="card report-card" href="Report/InOut.aspx"><span class="report-mark">IN/OUT</span><h3>Personale in entrata e uscita</h3><p>Movimenti del personale per intervalli temporali ed esportazioni.</p></a>
+            <a class="card report-card" href="Report/Chart.aspx"><span class="report-mark">CHART</span><h3>Composizione del personale</h3><p>Consistenza e distribuzione per tipologia, sesso, FFAA e profilo.</p></a>
+            <a class="card report-card" href="Report/Ttoo.aspx"><span class="report-mark">TTOO</span><h3>Prospetti TTOO</h3><p>Estrazioni operative, struttura degli uffici e organigramma.</p></a>
+            <a class="card report-card" href="Report/Feo.aspx"><span class="report-mark">FEO</span><h3>Forza effettiva organica</h3><p>Cruscotto e distribuzione del personale attivo fino al terzo livello.</p></a>
+        </div>
+        <a class="button reports-button" href="Report/Indice.aspx">Apri tutti i report</a>
     </section>
 </asp:Content>

@@ -119,6 +119,7 @@
         </div>
         <section id="incarichi" class="card detail-section anchor-section">
             <h2>Incarichi</h2>
+            <div class="form-actions"><asp:HyperLink ID="AssignmentsEditLink" runat="server" CssClass="button" Visible="false">Gestisci incarichi</asp:HyperLink></div>
             <asp:GridView ID="AssignmentsGrid" runat="server" AutoGenerateColumns="false" CssClass="data-grid" GridLines="None" EmptyDataText="Nessun incarico associato.">
                 <Columns>
                     <asp:BoundField DataField="Descrizione" HeaderText="Incarico" />

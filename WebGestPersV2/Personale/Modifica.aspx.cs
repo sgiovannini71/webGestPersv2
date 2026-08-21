@@ -20,6 +20,7 @@ namespace WebGestPersV2.Personale
         {
             if (Id <= 0) { Response.Redirect("Elenco.aspx", true); return; }
             CancelLink.NavigateUrl = "Dettaglio.aspx?id=" + Id;
+            AssignmentsLink.NavigateUrl = "Incarichi.aspx?id=" + Id;
             if (!IsPostBack) Carica();
         }
 
@@ -32,8 +33,10 @@ namespace WebGestPersV2.Personale
             var repository = new PersonaleWriteRepository();
             Bind(EducationTitle, repository.TitoliStudio(), "-- nessuno --");
             Bind(TimeBand, repository.FasceOrarie(), "-- nessuna --");
+            Bind(ServiceStatus, repository.StatiServizio(), "-- seleziona --");
             Seleziona(EducationTitle, persona.IdTitoloStudio);
             Seleziona(TimeBand, persona.IdFasciaOraria);
+            SelezionaTesto(ServiceStatus, persona.StatoServizio, "attivo");
             LastName.Text = persona.Cognome;
             FirstName.Text = persona.Nome;
             TaxCode.Text = persona.CodiceFiscale;
@@ -41,6 +44,8 @@ namespace WebGestPersV2.Personale
             OfficePhone.Text = persona.TelefonoUfficio;
             Room.Text = persona.NumeroStanza;
             AssignmentDate.Text = FormattaData(persona.DataAssegnazione);
+            ExitDate.Text = FormattaData(persona.DataUscita);
+            AssignmentsClosingDate.Text = DateTime.Today.ToString("yyyy-MM-dd");
 
             MilitaryPanel.Visible = persona.Militare;
             if (persona.Militare) CaricaProfiloMilitare(repository, persona);
@@ -93,6 +98,15 @@ namespace WebGestPersV2.Personale
             CaricaInquadramentoMilitare(new PersonaleWriteRepository(), null, null, null, null);
         }
 
+        protected void ServiceStatus_Changed(object sender,EventArgs e)
+        {
+            if(!string.Equals(ServiceStatus.SelectedValue,"attivo",StringComparison.OrdinalIgnoreCase))
+            {
+                if(string.IsNullOrWhiteSpace(ExitDate.Text))ExitDate.Text=DateTime.Today.ToString("yyyy-MM-dd");
+                if(string.IsNullOrWhiteSpace(AssignmentsClosingDate.Text))AssignmentsClosingDate.Text=DateTime.Today.ToString("yyyy-MM-dd");
+            }
+        }
+
         private void CaricaInquadramentoMilitare(PersonaleWriteRepository repository, int? gradoDaSelezionare,
             int? categoriaDaSelezionare, int? ruoloDaSelezionare, int? specialitaDaSelezionare)
         {
@@ -137,7 +151,10 @@ namespace WebGestPersV2.Personale
                     DataAssegnazione = ParseData(AssignmentDate.Text, "data di assegnazione"),
                     TelefonoUfficio = OfficePhone.Text.Trim(), NumeroStanza = Room.Text.Trim(),
                     IdTitoloStudio = int.TryParse(EducationTitle.SelectedValue, out titolo) ? (int?)titolo : null,
-                    IdFasciaOraria = int.TryParse(TimeBand.SelectedValue, out fascia) ? (int?)fascia : null
+                    IdFasciaOraria = int.TryParse(TimeBand.SelectedValue, out fascia) ? (int?)fascia : null,
+                    StatoServizio = ServiceStatus.SelectedValue,
+                    DataUscita = ParseData(ExitDate.Text, "data di uscita"),
+                    DataChiusuraIncarichi = ParseData(AssignmentsClosingDate.Text, "data di chiusura degli incarichi")
                 };
                 if (persona.Militare)
                 {
@@ -172,7 +189,8 @@ namespace WebGestPersV2.Personale
                     dati.FasciaRetributiva = PayBand.SelectedValue;
                 }
                 new PersonaleWriteRepository().AggiornaDatiGenerali(dati, Context.User.Identity.Name);
-                Response.Redirect("Dettaglio.aspx?id=" + Id, false);
+                string destinazione=string.Equals(dati.StatoServizio,"attivo",StringComparison.OrdinalIgnoreCase)?"Dettaglio.aspx?id="+Id:"Elenco.aspx";
+                Response.Redirect(destinazione, false);
                 Context.ApplicationInstance.CompleteRequest();
             }
             catch (Exception ex)
@@ -216,7 +234,10 @@ namespace WebGestPersV2.Personale
         private static void SelezionaTesto(DropDownList controllo, string valore, string predefinito)
         {
             valore = string.IsNullOrWhiteSpace(valore) ? predefinito : valore.Trim();
-            controllo.SelectedValue = controllo.Items.FindByValue(valore) != null ? valore : predefinito;
+            foreach(ListItem item in controllo.Items)
+                if(string.Equals(item.Value,valore,StringComparison.OrdinalIgnoreCase)){controllo.SelectedValue=item.Value;return;}
+            foreach(ListItem item in controllo.Items)
+                if(string.Equals(item.Value,predefinito,StringComparison.OrdinalIgnoreCase)){controllo.SelectedValue=item.Value;return;}
         }
     }
 }

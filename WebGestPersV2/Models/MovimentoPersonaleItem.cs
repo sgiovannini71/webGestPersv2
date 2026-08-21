@@ -1,0 +1,2 @@
+using System;
+namespace WebGestPersV2.Models { public sealed class MovimentoPersonaleItem { public int IdPersonale { get; set; } public string Cognome { get; set; } public string Nome { get; set; } public string TipoPersonale { get; set; } public string GradoProfilo { get; set; } public string StatoServizio { get; set; } public DateTime DataEvento { get; set; } public string DataEventoTesto { get { return DataEvento.ToString("dd/MM/yyyy"); } } } }
