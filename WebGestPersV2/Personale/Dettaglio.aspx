@@ -21,6 +21,7 @@
             <a href="#dati-generali">Dati generali</a>
             <a href="#dati-sensibili">Dati sensibili</a>
             <a href="#profilo">Profilo</a>
+            <a href="#caselle-posta">Caselle di posta</a>
             <a href="#incarichi">Incarichi</a>
             <a href="#storico-incarichi">Storico incarichi</a>
             <a href="#storico-modifiche">Storico modifiche</a>
@@ -119,6 +120,11 @@
             </dl>
         </asp:Panel>
         </div>
+        <section id="caselle-posta" class="card detail-section anchor-section">
+            <h2>Caselle di posta</h2>
+            <div class="form-actions"><asp:HyperLink ID="MailboxesEditLink" runat="server" CssClass="button" Visible="false">Gestisci caselle di posta</asp:HyperLink></div>
+            <asp:GridView ID="MailboxesGrid" runat="server" AutoGenerateColumns="false" CssClass="data-grid" GridLines="None" EmptyDataText="Nessuna casella postale associata."><Columns><asp:BoundField DataField="Denominazione" HeaderText="Indirizzo e-mail"/><asp:BoundField DataField="Tipo" HeaderText="Tipo"/></Columns></asp:GridView>
+        </section>
         <section id="incarichi" class="card detail-section anchor-section">
             <h2>Incarichi</h2>
             <div class="form-actions"><asp:HyperLink ID="AssignmentsEditLink" runat="server" CssClass="button" Visible="false">Gestisci incarichi</asp:HyperLink></div>

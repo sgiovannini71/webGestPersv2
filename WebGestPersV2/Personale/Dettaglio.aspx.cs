@@ -40,6 +40,8 @@ namespace WebGestPersV2.Personale
                 PersonaDettaglio persona = new PersonaleRepository().TrovaAttivo(idPersonale);
                 if (persona == null) { MostraErrore("Persona attiva non trovata."); return; }
                 PopolaControlli(persona);
+                MailboxesGrid.DataSource = new CasellePostaliRepository().Elenca(idPersonale);
+                MailboxesGrid.DataBind();
                 AssignmentsGrid.DataSource = new PersonaleRepository().CercaIncarichi(idPersonale);
                 AssignmentsGrid.DataBind();
                 AssignmentHistoryGrid.DataSource = new PersonaleRepository().CercaStoricoIncarichi(idPersonale);
@@ -60,6 +62,8 @@ namespace WebGestPersV2.Personale
             EditLink.NavigateUrl = "Modifica.aspx?id=" + p.IdPersonale;
             AssignmentsEditLink.Visible = EditLink.Visible;
             AssignmentsEditLink.NavigateUrl = "Incarichi.aspx?id=" + p.IdPersonale;
+            MailboxesEditLink.Visible = EditLink.Visible;
+            MailboxesEditLink.NavigateUrl = "CasellePostali.aspx?id=" + p.IdPersonale;
             PersonnelId.Text = p.IdPersonale.ToString(); TaxCode.Text = Valore(p.CodiceFiscale); Gender.Text = Valore(p.Sesso);
             ServiceStatus.Text = Valore(p.StatoServizio); OfficePhone.Text = Valore(p.TelefonoUfficio); Room.Text = Valore(p.NumeroStanza);
             SourceOrganization.Text = Valore(p.EnteProvenienza);

@@ -4,6 +4,7 @@
 .brand-logo { display: block; width: 38px; height: 38px; object-fit: contain; }
 .brand .brand-name { color: #fff; }
 .brand-name > span { color: #8db3ff; }
+.message.info { background: #eff6ff; color: #1d4f91; }
 
 /* Personale per unità organizzativa */
 .organigramma-tools { display: grid; grid-template-columns: minmax(230px, 1fr) 190px auto; gap: 16px; align-items: end; margin-bottom: 14px; }

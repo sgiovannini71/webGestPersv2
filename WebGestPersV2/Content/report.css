@@ -24,6 +24,11 @@
 .report-toolbar label { font-weight: 600; }
 .report-toolbar select { min-height: 40px; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 7px; background: #fff; }
 .result-count { display: block; margin-bottom: 8px; color: var(--muted); font-size: 13px; }
+.report-kpis { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin:22px 0; }
+.report-kpis .card { padding:18px 20px; box-shadow:none; }
+.report-kpis span { display:block; margin-bottom:5px; color:var(--muted); font-size:12px; font-weight:700; text-transform:uppercase; }
+.report-kpis strong { display:block; font-size:28px; line-height:1.15; }
+.people-filters input[type=text] { width:100%; min-height:41px; padding:7px 10px; border:1px solid #cbd5e1; border-radius:7px; background:#fff; }
 .report-title-actions { display: flex; justify-content: space-between; gap: 20px; align-items: flex-end; }
 .chart-report-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .chart-card h2 { margin: 0 0 18px; font-size: 19px; }
@@ -92,6 +97,6 @@
 .people-filter-actions { padding-bottom: 1px; white-space: nowrap; }
 .people-list-actions { display: flex; justify-content: flex-end; margin: -4px 0 14px; }
 @media (max-width: 950px) { .report-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .movement-grid,.chart-report-grid { grid-template-columns: 1fr; } }
-@media (max-width: 950px) { .ttoo-kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .ttoo-kpi-grid + .report-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } .feo-dashboard-kpis { grid-template-columns: repeat(2,minmax(0,1fr)); } .people-filters { grid-template-columns: 1fr; } }
+@media (max-width: 950px) { .ttoo-kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .ttoo-kpi-grid + .report-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } .feo-dashboard-kpis { grid-template-columns: repeat(2,minmax(0,1fr)); } .report-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); } .people-filters { grid-template-columns: 1fr; } }
 @media (max-width: 700px) { .report-card-grid { grid-template-columns: 1fr; } .report-family-header { display: block; } .report-status { display: inline-block; margin-top: 8px; } .ttoo-context { display: block; } .ttoo-context span { margin-bottom: 4px; } .ttoo-context strong { display: block; } .ttoo-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 18px 0; } .ttoo-kpi-grid .card { padding: 15px; } .ttoo-kpi-grid strong { font-size: 25px; } .ttoo-kpi-grid + .report-filters { grid-template-columns: 1fr; gap: 13px; } .ttoo-kpi-grid ~ .report-wide { padding: 15px; } .feo-dashboard-kpis { grid-template-columns: 1fr; gap: 10px; } .people-filter-group { grid-template-columns: 1fr; } }
 @media print { .site-header,footer,.back-link,.section-nav,.no-print { display:none!important; } body,.page { background:#fff; } .page { max-width:none;padding:0; } .chart-report-grid { grid-template-columns:repeat(2,1fr); } .card { box-shadow:none;break-inside:avoid; } }

@@ -12,8 +12,8 @@
     <asp:BoundField DataField="DataInizioTesto" HeaderText="Data inizio" /><asp:BoundField DataField="UfficioLivello1" HeaderText="1° livello" />
     <asp:BoundField DataField="UfficioLivello2" HeaderText="2° livello" /><asp:BoundField DataField="UfficioLivello3" HeaderText="3° livello" />
     <asp:TemplateField HeaderText=""><ItemTemplate>
-     <asp:HyperLink runat="server" CssClass="button secondary" NavigateUrl='<%# UrlModifica(Eval("IdIncarico")) %>' Visible='<%# Convert.ToInt32(Eval("IdTipoIncarico")) != -1 %>'>Modifica</asp:HyperLink>
-     <asp:HyperLink runat="server" CssClass="button secondary" NavigateUrl='<%# UrlChiusura(Eval("IdIncarico")) %>' Visible='<%# Convert.ToInt32(Eval("IdTipoIncarico")) != -1 %>'>Chiudi</asp:HyperLink>
+     <asp:HyperLink runat="server" CssClass="button secondary" NavigateUrl='<%# UrlModifica(Eval("IdIncarico")) %>' Visible='<%# !Convert.ToBoolean(Eval("Predefinito")) %>'>Modifica</asp:HyperLink>
+     <asp:HyperLink runat="server" CssClass="button secondary" NavigateUrl='<%# UrlChiusura(Eval("IdIncarico")) %>' Visible='<%# !Convert.ToBoolean(Eval("Predefinito")) %>'>Chiudi</asp:HyperLink>
     </ItemTemplate></asp:TemplateField>
    </Columns>
   </asp:GridView>

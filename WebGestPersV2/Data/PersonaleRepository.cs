@@ -81,11 +81,40 @@ namespace WebGestPersV2.Data
             return risultati;
         }
 
+        public IList<PersonaListaItem> CercaNonAttivi(string testo, string statoServizio)
+        {
+            const string sql = @"SELECT ep.IDPersonale,ep.Cognome,ep.Nome,ep.CodiceFiscale,ep.Stato_Servizio,ep.Militare,
+                                        CASE WHEN ep.Militare=1 THEN g.SiglaGrado ELSE t.Sigla_titolo END
+                                 FROM dbo.ElencoPersonale ep
+                                 LEFT JOIN dbo.Profilo_militare pm ON pm.IDPersonale=ep.IDPersonale AND ep.Militare=1
+                                 LEFT JOIN dbo.Gradi g ON g.ID_Grado=pm.ID_Grado
+                                 LEFT JOIN dbo.PersCivile pc ON pc.IDPersonale=ep.IDPersonale AND ep.Militare=0
+                                 LEFT JOIN dbo.Titoli t ON t.ID_Titolo=pc.ID_TitoloAtt
+                                 WHERE LOWER(LTRIM(RTRIM(ep.Stato_Servizio)))<>'attivo'
+                                   AND (@stato='' OR ep.Stato_Servizio=@stato)
+                                   AND (@testo='' OR ep.Cognome LIKE @ricerca OR ep.Nome LIKE @ricerca OR ep.CodiceFiscale LIKE @ricerca)
+                                 ORDER BY ep.Stato_Servizio,ep.Cognome,ep.Nome";
+            var risultati = new List<PersonaListaItem>();
+            using(var connection=new SqlConnection(Db.ConnectionString))
+            using(var command=new SqlCommand(sql,connection))
+            {
+                string filtro=(testo??string.Empty).Trim();
+                command.Parameters.Add("@stato",SqlDbType.VarChar,20).Value=(statoServizio??string.Empty).Trim();
+                command.Parameters.Add("@testo",SqlDbType.VarChar,50).Value=filtro;
+                command.Parameters.Add("@ricerca",SqlDbType.VarChar,52).Value="%"+filtro+"%";
+                connection.Open();
+                using(var reader=command.ExecuteReader())
+                    while(reader.Read())risultati.Add(new PersonaListaItem{IdPersonale=reader.GetInt32(0),Cognome=Testo(reader,1),Nome=Testo(reader,2),CodiceFiscale=Testo(reader,3),StatoServizio=Testo(reader,4),Militare=reader.GetBoolean(5),GradoProfilo=Testo(reader,6)});
+            }
+            return risultati;
+        }
+
         public IList<IncaricoListaItem> CercaIncarichi(int idPersonale)
         {
             const string sql = @"SELECT i.id_incarico, ti.Descr_incarico, i.principale,
                                         i.Data_inizio, l1.SgUff1, l2.SgUff2, l3.SgUff3,
-                                        i.id_tipo_incarico, i.ID_Uff1, i.ID_Uff2, i.ID_Uff3
+                                        i.id_tipo_incarico, i.ID_Uff1, i.ID_Uff2, i.ID_Uff3,
+                                        CASE WHEN LOWER(LTRIM(RTRIM(ISNULL(ti.Sigla_incarico,''))))='n/a' THEN CAST(1 AS bit) ELSE CAST(0 AS bit) END
                                  FROM dbo.Incarichi AS i
                                  INNER JOIN dbo.Tipo_incarichi AS ti
                                      ON i.id_tipo_incarico = ti.id_tipo_incarico
@@ -113,7 +142,8 @@ namespace WebGestPersV2.Data
                             Principale = !reader.IsDBNull(2) && reader.GetBoolean(2), DataInizio = Data(reader, 3),
                             UfficioLivello1 = Testo(reader, 4), UfficioLivello2 = Testo(reader, 5), UfficioLivello3 = Testo(reader, 6),
                             IdTipoIncarico = reader.GetInt32(7), IdUfficio1 = InteroNullable(reader, 8),
-                            IdUfficio2 = InteroNullable(reader, 9), IdUfficio3 = InteroNullable(reader, 10)
+                            IdUfficio2 = InteroNullable(reader, 9), IdUfficio3 = InteroNullable(reader, 10),
+                            Predefinito = reader.GetBoolean(11)
                         });
                     }
                 }
@@ -122,6 +152,12 @@ namespace WebGestPersV2.Data
         }
 
         public PersonaDettaglio TrovaAttivo(int idPersonale)
+        {
+            PersonaDettaglio persona = Trova(idPersonale);
+            return persona != null && string.Equals(persona.StatoServizio, "attivo", StringComparison.OrdinalIgnoreCase) ? persona : null;
+        }
+
+        public PersonaDettaglio Trova(int idPersonale)
         {
             const string sql = @"SELECT ep.IDPersonale, ep.Cognome, ep.Nome, ep.CodiceFiscale,
                                         ep.SessoM, ep.Militare, ep.Stato_Servizio, ep.TelefonoUfficio,
@@ -166,7 +202,7 @@ namespace WebGestPersV2.Data
                                  LEFT JOIN dbo.Comuni AS cn ON ans.ID_Comune_Nascita = cn.ID_comune
                                  LEFT JOIN dbo.Comuni AS cr ON ans.ID_comune_Residenza = cr.ID_comune
                                  LEFT JOIN dbo.Comuni AS cd ON ans.ID_comune_Domicilio = cd.ID_comune
-                                 WHERE ep.IDPersonale = @IdPersonale AND ep.Stato_Servizio = 'attivo'";
+                                 WHERE ep.IDPersonale = @IdPersonale";
             using (var connection = new SqlConnection(Db.ConnectionString))
             using (var command = new SqlCommand(sql, connection))
             {

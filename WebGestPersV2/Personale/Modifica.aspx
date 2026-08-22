@@ -16,7 +16,7 @@
   <label>Titolo di studio</label><asp:DropDownList ID="EducationTitle" runat="server" /><span></span>
   <label>Fascia oraria</label><asp:DropDownList ID="TimeBand" runat="server" /><span></span>
  </div></section>
- <section class="card form-card detail-section"><h2>Stato di servizio</h2><p class="message error">Attenzione: passando da <strong>attivo</strong> a qualsiasi altro stato, tutti gli incarichi vengono chiusi e trasferiti nello storico.</p><div class="edit-grid">
+ <section class="card form-card detail-section"><h2>Stato di servizio</h2><p class="message error">Attenzione: passando da <strong>attivo</strong> a qualsiasi altro stato, tutti gli incarichi vengono chiusi e trasferiti nello storico.</p><asp:Panel ID="ReactivationMessage" runat="server" CssClass="message info" Visible="false">Selezionando <strong>attivo</strong>, la data di uscita verrà cancellata e saranno aggiunti automaticamente l’incarico e gli uffici predefiniti. La riattivazione sarà aggiunta alle note senza cancellare il contenuto esistente.</asp:Panel><div class="edit-grid">
   <label>Stato di servizio*</label><asp:DropDownList ID="ServiceStatus" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ServiceStatus_Changed" /><span></span>
   <label>Data di uscita</label><asp:TextBox ID="ExitDate" runat="server" TextMode="Date" /><span>Obbligatoria quando si lascia lo stato attivo.</span>
   <label>Data chiusura incarichi</label><asp:TextBox ID="AssignmentsClosingDate" runat="server" TextMode="Date" /><span>Applicata a tutti gli incarichi attivi.</span>

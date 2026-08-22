@@ -64,6 +64,11 @@
     <Content Include="Personale\Nuovo.aspx" />
     <Content Include="Personale\Modifica.aspx" />
     <Content Include="Personale\Incarichi.aspx" />
+    <Content Include="Personale\NonAttivi.aspx" />
+    <Content Include="Personale\CasellePostali.aspx" />
+    <Content Include="PersonaleEsterno\Elenco.aspx" />
+    <Content Include="PersonaleEsterno\Nuovo.aspx" />
+    <Content Include="PersonaleEsterno\Modifica.aspx" />
     <Content Include="Gestione\Indice.aspx" />
     <Content Include="Gestione\Tabella.aspx" />
     <Content Include="Help\Default.aspx" />
@@ -78,6 +83,7 @@
     <Content Include="Report\Feo.aspx" />
     <Content Include="Report\FeoDistribuzione.aspx" />
     <Content Include="Report\FeoCruscotto.aspx" />
+    <Content Include="Report\CasellePostali.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Db.cs" />
@@ -120,6 +126,13 @@
     <Compile Include="Models\ModificaIncaricoRequest.cs" />
     <Compile Include="Models\StoricoIncaricoListaItem.cs" />
     <Compile Include="Models\TabellaGestioneDefinizione.cs" />
+    <Compile Include="Models\PersonaleEsternoItem.cs" />
+    <Compile Include="Models\PersonaleEsternoRequest.cs" />
+    <Compile Include="Models\CasellaPostaleItem.cs" />
+    <Compile Include="Models\CasellaPostaleReportItem.cs" />
+    <Compile Include="Data\PersonaleEsternoRepository.cs" />
+    <Compile Include="Data\CasellePostaliRepository.cs" />
+    <Compile Include="Data\CasellePostaliReportRepository.cs" />
     <Compile Include="Gestione\Indice.aspx.cs">
       <DependentUpon>Indice.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -162,6 +175,48 @@
     <Compile Include="Personale\Incarichi.aspx.designer.cs">
       <DependentUpon>Incarichi.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Personale\NonAttivi.aspx.cs">
+      <DependentUpon>NonAttivi.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Personale\NonAttivi.aspx.designer.cs">
+      <DependentUpon>NonAttivi.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Personale\CasellePostali.aspx.cs">
+      <DependentUpon>CasellePostali.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Personale\CasellePostali.aspx.designer.cs">
+      <DependentUpon>CasellePostali.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Report\CasellePostali.aspx.cs">
+      <DependentUpon>CasellePostali.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Report\CasellePostali.aspx.designer.cs">
+      <DependentUpon>CasellePostali.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PersonaleEsterno\Elenco.aspx.cs">
+      <DependentUpon>Elenco.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PersonaleEsterno\Elenco.aspx.designer.cs">
+      <DependentUpon>Elenco.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PersonaleEsterno\Nuovo.aspx.cs">
+      <DependentUpon>Nuovo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PersonaleEsterno\Nuovo.aspx.designer.cs">
+      <DependentUpon>Nuovo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PersonaleEsterno\Modifica.aspx.cs">
+      <DependentUpon>Modifica.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PersonaleEsterno\Modifica.aspx.designer.cs">
+      <DependentUpon>Modifica.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Data\IncarichiWriteRepository.cs" />
     <Compile Include="Security\CodiceFiscaleParser.cs" />
     <Compile Include="Personale\Elenco.aspx.cs">
@@ -198,7 +253,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50831/</IISUrl>
+          <IISUrl>http://localhost:51304/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

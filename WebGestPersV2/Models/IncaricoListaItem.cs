@@ -9,6 +9,7 @@ namespace WebGestPersV2.Models
         public int? IdUfficio1 { get; set; }
         public int? IdUfficio2 { get; set; }
         public int? IdUfficio3 { get; set; }
+        public bool Predefinito { get; set; }
         public string Descrizione { get; set; }
         public bool Principale { get; set; }
         public DateTime? DataInizio { get; set; }

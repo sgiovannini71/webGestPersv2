@@ -98,7 +98,8 @@ namespace WebGestPersV2.Data
                                 descrizione = r.IsDBNull(3) ? "" : Convert.ToString(r.GetValue(3));
                             }
                         }
-                        if (idTipo == -1) throw new InvalidOperationException("L'incarico predefinito non può essere chiuso.");
+                        int idTipoPredefinito = IdTipoPredefinito(c, tx);
+                        if (idTipo == idTipoPredefinito) throw new InvalidOperationException("L'incarico predefinito non può essere chiuso.");
 
                         Esegui(c, tx, @"INSERT dbo.StoricoIncarichi(IDPersonale,Incarico,principale,data_inizio,date_fine)
                             VALUES(@persona,@descrizione,@principale,@inizio,@fine)", Parametro("@persona", idPersonale),
@@ -107,7 +108,7 @@ namespace WebGestPersV2.Data
                         Esegui(c, tx, "DELETE dbo.Incarichi WHERE IDPersonale=@persona AND id_incarico=@incarico", Parametro("@persona", idPersonale), Parametro("@incarico", idIncarico));
                         if (Conta(c, tx, "SELECT COUNT(*) FROM dbo.Incarichi WHERE IDPersonale=@persona", Parametro("@persona", idPersonale)) == 0)
                             Esegui(c, tx, @"INSERT dbo.Incarichi(IDPersonale,id_tipo_incarico,Data_inizio,principale,ID_Uff1,ID_Uff2,ID_Uff3)
-                                VALUES(@persona,-1,NULL,1,@u1,@u2,@u3)", Parametro("@persona", idPersonale),
+                                VALUES(@persona,@tipo,NULL,1,@u1,@u2,@u3)", Parametro("@persona", idPersonale), Parametro("@tipo", idTipoPredefinito),
                                 Parametro("@u1", AppConfig.UfficioLivello1Vuoto), Parametro("@u2", AppConfig.UfficioLivello2Vuoto), Parametro("@u3", AppConfig.UfficioLivello3Vuoto));
                         Esegui(c, tx, "INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@persona,'Incarico chiuso',@ora,@utente,@prima,@dopo)",
                             Parametro("@persona", idPersonale), new SqlParameter("@ora", SqlDbType.DateTime) { Value = DateTime.Now }, Testo("@utente", utente), Testo("@prima", descrizione), Testo("@dopo", "—"));
@@ -125,6 +126,17 @@ namespace WebGestPersV2.Data
             if (d.IdUfficio1.HasValue && Conta(c, tx, "SELECT COUNT(*) FROM dbo.Liv1Uff WHERE ID_Uff1=@u1", Parametro("@u1", d.IdUfficio1.Value)) != 1) throw new InvalidOperationException("Ufficio di primo livello non valido.");
             if (d.IdUfficio2.HasValue && Conta(c, tx, "SELECT COUNT(*) FROM dbo.Liv2Uff WHERE ID_Uff1=@u1 AND ID_Uff2=@u2", Parametro("@u1", d.IdUfficio1.Value), Parametro("@u2", d.IdUfficio2.Value)) != 1) throw new InvalidOperationException("Ufficio di secondo livello non coerente.");
             if (d.IdUfficio3.HasValue && Conta(c, tx, "SELECT COUNT(*) FROM dbo.Liv3Uff WHERE ID_Uff1=@u1 AND ID_Uff2=@u2 AND ID_Uff3=@u3", Parametro("@u1", d.IdUfficio1.Value), Parametro("@u2", d.IdUfficio2.Value), Parametro("@u3", d.IdUfficio3.Value)) != 1) throw new InvalidOperationException("Ufficio di terzo livello non coerente.");
+        }
+        internal static int IdTipoPredefinito(SqlConnection c, SqlTransaction tx)
+        {
+            using (var q = new SqlCommand(@"SELECT TOP (1) id_tipo_incarico FROM dbo.Tipo_incarichi
+                WHERE LOWER(LTRIM(RTRIM(ISNULL(Sigla_incarico,''))))='n/a' ORDER BY id_tipo_incarico", c, tx))
+            {
+                object valore = q.ExecuteScalar();
+                if (valore == null || valore == DBNull.Value)
+                    throw new InvalidOperationException("Tipo incarico predefinito con sigla 'n/a' non configurato.");
+                return Convert.ToInt32(valore);
+            }
         }
         private static string Descrizione(SqlConnection c, SqlTransaction tx, int persona, int incarico) { using (var q = new SqlCommand("SELECT CONCAT(id_tipo_incarico,'|',CONVERT(varchar(30),Data_inizio,126),'|',principale,'|',ISNULL(ID_Uff1,''),'|',ISNULL(ID_Uff2,''),'|',ISNULL(ID_Uff3,'')) FROM dbo.Incarichi WITH (UPDLOCK) WHERE IDPersonale=@p AND id_incarico=@i", c, tx)) { q.Parameters.Add(Parametro("@p", persona)); q.Parameters.Add(Parametro("@i", incarico)); return Convert.ToString(q.ExecuteScalar()); } }
         private static IList<LookupItem> Leggi(string sql, params SqlParameter[] ps) { var x = new List<LookupItem>(); using (var c = new SqlConnection(Db.ConnectionString)) using (var q = new SqlCommand(sql, c)) { q.Parameters.AddRange(ps); c.Open(); using (var r = q.ExecuteReader()) while (r.Read()) x.Add(new LookupItem { Value = Convert.ToString(r.GetValue(0)), Text = Convert.ToString(r.GetValue(1)) }); } return x; }

@@ -19,14 +19,13 @@ namespace WebGestPersV2.Personale
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Id <= 0) { Response.Redirect("Elenco.aspx", true); return; }
-            CancelLink.NavigateUrl = "Dettaglio.aspx?id=" + Id;
             AssignmentsLink.NavigateUrl = "Incarichi.aspx?id=" + Id;
-            if (!IsPostBack) Carica();
+            if (!IsPostBack) { CancelLink.NavigateUrl = "Dettaglio.aspx?id=" + Id; Carica(); }
         }
 
         private void Carica()
         {
-            PersonaDettaglio persona = new PersonaleRepository().TrovaAttivo(Id);
+            PersonaDettaglio persona = new PersonaleRepository().Trova(Id);
             if (persona == null) throw new InvalidOperationException("Persona non trovata.");
             Verifica(persona.Militare);
 
@@ -46,6 +45,10 @@ namespace WebGestPersV2.Personale
             AssignmentDate.Text = FormattaData(persona.DataAssegnazione);
             ExitDate.Text = FormattaData(persona.DataUscita);
             AssignmentsClosingDate.Text = DateTime.Today.ToString("yyyy-MM-dd");
+            bool attivo = string.Equals(persona.StatoServizio, "attivo", StringComparison.OrdinalIgnoreCase);
+            ReactivationMessage.Visible = !attivo;
+            AssignmentsLink.Visible = attivo;
+            CancelLink.NavigateUrl = attivo ? "Dettaglio.aspx?id=" + Id : "NonAttivi.aspx";
 
             MilitaryPanel.Visible = persona.Militare;
             if (persona.Militare) CaricaProfiloMilitare(repository, persona);
@@ -100,7 +103,11 @@ namespace WebGestPersV2.Personale
 
         protected void ServiceStatus_Changed(object sender,EventArgs e)
         {
-            if(!string.Equals(ServiceStatus.SelectedValue,"attivo",StringComparison.OrdinalIgnoreCase))
+            if(string.Equals(ServiceStatus.SelectedValue,"attivo",StringComparison.OrdinalIgnoreCase))
+            {
+                ExitDate.Text=string.Empty;
+            }
+            else
             {
                 if(string.IsNullOrWhiteSpace(ExitDate.Text))ExitDate.Text=DateTime.Today.ToString("yyyy-MM-dd");
                 if(string.IsNullOrWhiteSpace(AssignmentsClosingDate.Text))AssignmentsClosingDate.Text=DateTime.Today.ToString("yyyy-MM-dd");
@@ -137,7 +144,7 @@ namespace WebGestPersV2.Personale
             if (!Page.IsValid) return;
             try
             {
-                PersonaDettaglio persona = new PersonaleRepository().TrovaAttivo(Id);
+                PersonaDettaglio persona = new PersonaleRepository().Trova(Id);
                 if (persona == null) throw new InvalidOperationException("Persona non trovata.");
                 Verifica(persona.Militare);
                 int titolo, fascia, forzaArmata, grado, posizione, categoriaMilitare, ruoloMilitare, specialitaMilitare;
@@ -189,7 +196,7 @@ namespace WebGestPersV2.Personale
                     dati.FasciaRetributiva = PayBand.SelectedValue;
                 }
                 new PersonaleWriteRepository().AggiornaDatiGenerali(dati, Context.User.Identity.Name);
-                string destinazione=string.Equals(dati.StatoServizio,"attivo",StringComparison.OrdinalIgnoreCase)?"Dettaglio.aspx?id="+Id:"Elenco.aspx";
+                string destinazione=string.Equals(dati.StatoServizio,"attivo",StringComparison.OrdinalIgnoreCase)?"Dettaglio.aspx?id="+Id:"NonAttivi.aspx";
                 Response.Redirect(destinazione, false);
                 Context.ApplicationInstance.CompleteRequest();
             }

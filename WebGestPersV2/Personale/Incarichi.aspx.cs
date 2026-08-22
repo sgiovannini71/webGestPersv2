@@ -39,7 +39,7 @@ namespace WebGestPersV2.Personale
             if (IdIncaricoDaChiudere.HasValue)
             {
                 IncaricoListaItem daChiudere = new IncarichiWriteRepository().Trova(Id, IdIncaricoDaChiudere.Value);
-                if (daChiudere == null || daChiudere.IdTipoIncarico == -1) throw new InvalidOperationException("Incarico chiudibile non trovato.");
+                if (daChiudere == null || daChiudere.Predefinito) throw new InvalidOperationException("Incarico chiudibile non trovato.");
                 EndDate.Text = DateTime.Today.ToString("yyyy-MM-dd");
             }
             if (!FormRichiesto) return;

@@ -21,7 +21,7 @@ namespace WebGestPersV2.Data
                     try
                     {
                         var vecchi = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                        using (var q = new SqlCommand("SELECT Cognome,Nome,CodiceFiscale,EnteProvenienza,Data_Ass_Armaereo,TelefonoUfficio,NumeroStanza,id_Tit_Studio,IDFasciaOraria,Stato_Servizio,Data_Usc_Armaereo FROM dbo.ElencoPersonale WITH (UPDLOCK) WHERE IDPersonale=@id", connection, tx))
+                        using (var q = new SqlCommand("SELECT Cognome,Nome,CodiceFiscale,EnteProvenienza,Data_Ass_Armaereo,TelefonoUfficio,NumeroStanza,id_Tit_Studio,IDFasciaOraria,Stato_Servizio,Data_Usc_Armaereo,CONVERT(varchar(max),Note) AS Note FROM dbo.ElencoPersonale WITH (UPDLOCK) WHERE IDPersonale=@id", connection, tx))
                         {
                             q.Parameters.Add("@id", SqlDbType.Int).Value = dati.IdPersonale;
                             using (var r = q.ExecuteReader(CommandBehavior.SingleRow))
@@ -63,6 +63,7 @@ namespace WebGestPersV2.Data
             if(string.Equals(precedente,nuovo,StringComparison.OrdinalIgnoreCase))return;
 
             bool uscita=string.Equals(precedente,"attivo",StringComparison.OrdinalIgnoreCase)&&!string.Equals(nuovo,"attivo",StringComparison.OrdinalIgnoreCase);
+            bool riattivazione=!string.Equals(precedente,"attivo",StringComparison.OrdinalIgnoreCase)&&string.Equals(nuovo,"attivo",StringComparison.OrdinalIgnoreCase);
             if(uscita&&(!d.DataUscita.HasValue||!d.DataChiusuraIncarichi.HasValue))
                 throw new InvalidOperationException("Indicare la data di uscita e la data di chiusura degli incarichi.");
             if(uscita)
@@ -80,8 +81,28 @@ namespace WebGestPersV2.Data
                 P("@stato",SqlDbType.VarChar,50,nuovo),P("@uscita",SqlDbType.DateTime,dataUscita.HasValue?(object)dataUscita.Value:DBNull.Value),P("@id",SqlDbType.Int,d.IdPersonale));
             Esegui(c,t,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,'Stato_Servizio',@ora,@utente,@prima,@dopo)",
                 P("@id",SqlDbType.Int,d.IdPersonale),P("@ora",SqlDbType.DateTime,ora),P("@utente",SqlDbType.VarChar,255,utente),P("@prima",SqlDbType.VarChar,255,precedente),P("@dopo",SqlDbType.VarChar,255,nuovo));
-            if(uscita)Esegui(c,t,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,'Data_Usc_Armaereo',@ora,@utente,@prima,@dopo)",
-                P("@id",SqlDbType.Int,d.IdPersonale),P("@ora",SqlDbType.DateTime,ora),P("@utente",SqlDbType.VarChar,255,utente),P("@prima",SqlDbType.VarChar,255,vecchi["Data_Usc_Armaereo"]),P("@dopo",SqlDbType.VarChar,255,d.DataUscita.Value.ToString("s")));
+            if(uscita||riattivazione)Esegui(c,t,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,'Data_Usc_Armaereo',@ora,@utente,@prima,@dopo)",
+                P("@id",SqlDbType.Int,d.IdPersonale),P("@ora",SqlDbType.DateTime,ora),P("@utente",SqlDbType.VarChar,255,utente),P("@prima",SqlDbType.VarChar,255,vecchi["Data_Usc_Armaereo"]),P("@dopo",SqlDbType.VarChar,255,uscita?d.DataUscita.Value.ToString("s"):""));
+            if(riattivazione)
+            {
+                int idTipoPredefinito=IncarichiWriteRepository.IdTipoPredefinito(c,t);
+                bool incaricoCreato=Scalar<int>(c,t,"SELECT COUNT(*) FROM dbo.Incarichi WHERE IDPersonale=@id AND id_tipo_incarico=@tipo AND ID_Uff1=@u1 AND ID_Uff2=@u2 AND ID_Uff3=@u3",P("@id",SqlDbType.Int,d.IdPersonale),P("@tipo",SqlDbType.Int,idTipoPredefinito),P("@u1",SqlDbType.Int,AppConfig.UfficioLivello1Vuoto),P("@u2",SqlDbType.Int,AppConfig.UfficioLivello2Vuoto),P("@u3",SqlDbType.Int,AppConfig.UfficioLivello3Vuoto))==0;
+                Esegui(c,t,"UPDATE dbo.Incarichi SET principale=0 WHERE IDPersonale=@id AND principale=1",P("@id",SqlDbType.Int,d.IdPersonale));
+                if(incaricoCreato)
+                {
+                    Esegui(c,t,"INSERT dbo.Incarichi(IDPersonale,id_tipo_incarico,Data_inizio,principale,ID_Uff1,ID_Uff2,ID_Uff3) VALUES(@id,@tipo,@ora,1,@u1,@u2,@u3)",
+                        P("@id",SqlDbType.Int,d.IdPersonale),P("@tipo",SqlDbType.Int,idTipoPredefinito),P("@ora",SqlDbType.DateTime,ora),P("@u1",SqlDbType.Int,AppConfig.UfficioLivello1Vuoto),P("@u2",SqlDbType.Int,AppConfig.UfficioLivello2Vuoto),P("@u3",SqlDbType.Int,AppConfig.UfficioLivello3Vuoto));
+                }
+                else Esegui(c,t,@"UPDATE dbo.Incarichi SET principale=1 WHERE id_incarico=(SELECT TOP (1) id_incarico FROM dbo.Incarichi WHERE IDPersonale=@id AND id_tipo_incarico=@tipo AND ID_Uff1=@u1 AND ID_Uff2=@u2 AND ID_Uff3=@u3 ORDER BY id_incarico DESC)",
+                    P("@id",SqlDbType.Int,d.IdPersonale),P("@tipo",SqlDbType.Int,idTipoPredefinito),P("@u1",SqlDbType.Int,AppConfig.UfficioLivello1Vuoto),P("@u2",SqlDbType.Int,AppConfig.UfficioLivello2Vuoto),P("@u3",SqlDbType.Int,AppConfig.UfficioLivello3Vuoto));
+                string commento="["+ora.ToString("dd/MM/yyyy HH:mm")+"] Riattivazione da stato '"+precedente+"' effettuata da "+utente+".";
+                Esegui(c,t,@"UPDATE dbo.ElencoPersonale SET Note=CASE WHEN NULLIF(RTRIM(CONVERT(varchar(max),Note)),'') IS NULL THEN @nota ELSE CONVERT(varchar(max),Note)+CHAR(13)+CHAR(10)+@nota END WHERE IDPersonale=@id",
+                    P("@nota",SqlDbType.VarChar,8000,commento),P("@id",SqlDbType.Int,d.IdPersonale));
+                Esegui(c,t,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,'Riattivazione - incarico predefinito',@ora,@utente,@prima,@dopo)",
+                    P("@id",SqlDbType.Int,d.IdPersonale),P("@ora",SqlDbType.DateTime,ora),P("@utente",SqlDbType.VarChar,255,utente),P("@prima",SqlDbType.VarChar,255,incaricoCreato?"Incarico predefinito assente":"Incarico predefinito già presente"),P("@dopo",SqlDbType.VarChar,255,"Principale; Tipo="+idTipoPredefinito+" (n/a); Uffici="+AppConfig.UfficioLivello1Vuoto+"/"+AppConfig.UfficioLivello2Vuoto+"/"+AppConfig.UfficioLivello3Vuoto));
+                Esegui(c,t,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,'Note - riattivazione',@ora,@utente,@prima,@dopo)",
+                    P("@id",SqlDbType.Int,d.IdPersonale),P("@ora",SqlDbType.DateTime,ora),P("@utente",SqlDbType.VarChar,255,utente),P("@prima",SqlDbType.VarChar,255,string.IsNullOrWhiteSpace(vecchi["Note"])?"Vuote":"Note precedenti conservate"),P("@dopo",SqlDbType.VarChar,255,commento));
+            }
         }
 
         private static void AggiornaProfiloMilitare(SqlConnection c, SqlTransaction t, ModificaPersonaleRequest d, DateTime ora, string utente)
@@ -190,7 +211,8 @@ namespace WebGestPersV2.Data
                             VALUES(@id,@ora,@nascita,2,@comune,0,0)",P("@id",SqlDbType.Int,id),P("@ora",SqlDbType.DateTime,ora),P("@nascita",SqlDbType.DateTime,cf.DataNascita),P("@comune",SqlDbType.Int,comune ?? (object)DBNull.Value));
                         if (dati.Militare) InserisciMilitare(connection,tx,id,ora,dati);
                         else InserisciCivile(connection,tx,id,ora,dati);
-                        Esegui(connection, tx, "INSERT dbo.Incarichi(IDPersonale,id_tipo_incarico,Data_inizio,principale,ID_Uff1,ID_Uff2,ID_Uff3) VALUES(@id,-1,@ora,1,@u1,@u2,@u3)",P("@id",SqlDbType.Int,id),P("@ora",SqlDbType.DateTime,ora),P("@u1",SqlDbType.Int,AppConfig.UfficioLivello1Vuoto),P("@u2",SqlDbType.Int,AppConfig.UfficioLivello2Vuoto),P("@u3",SqlDbType.Int,AppConfig.UfficioLivello3Vuoto));
+                        int idTipoPredefinito=IncarichiWriteRepository.IdTipoPredefinito(connection,tx);
+                        Esegui(connection, tx, "INSERT dbo.Incarichi(IDPersonale,id_tipo_incarico,Data_inizio,principale,ID_Uff1,ID_Uff2,ID_Uff3) VALUES(@id,@tipo,@ora,1,@u1,@u2,@u3)",P("@id",SqlDbType.Int,id),P("@tipo",SqlDbType.Int,idTipoPredefinito),P("@ora",SqlDbType.DateTime,ora),P("@u1",SqlDbType.Int,AppConfig.UfficioLivello1Vuoto),P("@u2",SqlDbType.Int,AppConfig.UfficioLivello2Vuoto),P("@u3",SqlDbType.Int,AppConfig.UfficioLivello3Vuoto));
                         Esegui(connection,tx,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,'Creazione utente',@ora,@utente,'',@dopo)",P("@id",SqlDbType.Int,id),P("@ora",SqlDbType.DateTime,ora),P("@utente",SqlDbType.VarChar,255,CrudLogger.UtenteCorrente),P("@dopo",SqlDbType.VarChar,255,(dati.Militare?"Militare":"Civile")+"; "+dati.Cognome+" "+dati.Nome+"; CF="+dati.CodiceFiscale));
                         tx.Commit(); CrudLogger.Info("CREATE", "Personale", "IDPersonale="+id+"; tipo="+(dati.Militare?"Militare":"Civile")); return id;
                     }

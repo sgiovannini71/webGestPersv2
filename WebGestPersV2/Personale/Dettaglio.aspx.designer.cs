@@ -8,6 +8,7 @@ namespace WebGestPersV2.Personale
         protected global::System.Web.UI.WebControls.Image ProfilePhoto;
         protected global::System.Web.UI.WebControls.HyperLink EditLink;
         protected global::System.Web.UI.WebControls.HyperLink AssignmentsEditLink;
+        protected global::System.Web.UI.WebControls.HyperLink MailboxesEditLink;
         protected global::System.Web.UI.WebControls.Literal PersonnelType, FullName, PersonnelId, TaxCode, Gender, ServiceStatus;
         protected global::System.Web.UI.WebControls.Literal OfficePhone, Room, SourceOrganization, AssignmentDate, ExitDate;
         protected global::System.Web.UI.WebControls.Literal BirthDate, BirthTown, MaritalStatus, MobilePhone;
@@ -22,6 +23,7 @@ namespace WebGestPersV2.Personale
         protected global::System.Web.UI.WebControls.Literal TitleCode, TitleDescription, CurrentDecree, CurrentLegalDate, CurrentEconomicDate;
         protected global::System.Web.UI.WebControls.Literal Area, Subarea, ManagementBand, PayBand, CivilianUpdatedAt, Notes;
         protected global::System.Web.UI.WebControls.GridView AssignmentsGrid;
+        protected global::System.Web.UI.WebControls.GridView MailboxesGrid;
         protected global::System.Web.UI.WebControls.GridView AssignmentHistoryGrid;
         protected global::System.Web.UI.WebControls.GridView ModificationHistoryGrid;
     }

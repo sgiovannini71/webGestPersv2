@@ -18,6 +18,8 @@ namespace WebGestPersV2.Configuration
         public static readonly string FileServerPath = LeggiTesto("myFileServerPath");
         public static readonly string PhotoFileServerPath = LeggiTesto("PhotoFileServerPath");
         public static readonly string LogFilePath = LeggiTesto("logfilepath");
+        public static readonly string DominioPostaFunzionale = NormalizzaDominio(LeggiTesto("DominioPostaFunzionale"));
+        public static readonly string DominioPostaPersonale = NormalizzaDominio(LeggiTesto("DominioPostaPersonale"));
         public static readonly string LivelloDirigente = LeggiTesto("livelloDir");
         public static readonly string UrlOrganigrammaDipendente = LeggiTesto("URLOrgChart");
         public static readonly string UrlOrganigramma = LeggiTesto("URLOrganizationChart");
@@ -97,6 +99,13 @@ namespace WebGestPersV2.Configuration
         private static string Normalizza(string valore)
         {
             return (valore ?? string.Empty).Trim().ToUpperInvariant();
+        }
+
+        private static string NormalizzaDominio(string valore)
+        {
+            valore = (valore ?? string.Empty).Trim().ToLowerInvariant();
+            while (valore.StartsWith("@", StringComparison.Ordinal)) valore = valore.Substring(1);
+            return valore.TrimEnd('.');
         }
     }
 }
