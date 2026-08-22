@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using WebGestPersV2.Configuration;
+using WebGestPersV2.Infrastructure;
 using WebGestPersV2.Models;
 using WebGestPersV2.Security;
 
@@ -44,8 +45,9 @@ namespace WebGestPersV2.Data
                         if (dati.Militare) AggiornaProfiloMilitare(connection, tx, dati, ora, modificatoDa);
                         else AggiornaProfiloCivile(connection, tx, dati, ora, modificatoDa);
                         tx.Commit();
+                        CrudLogger.Info("UPDATE", "Personale", "IDPersonale=" + dati.IdPersonale);
                     }
-                    catch { tx.Rollback(); throw; }
+                    catch(Exception ex) { tx.Rollback(); CrudLogger.Errore("UPDATE", "Personale", "IDPersonale=" + dati.IdPersonale, ex); throw; }
                 }
             }
         }
@@ -189,9 +191,10 @@ namespace WebGestPersV2.Data
                         if (dati.Militare) InserisciMilitare(connection,tx,id,ora,dati);
                         else InserisciCivile(connection,tx,id,ora,dati);
                         Esegui(connection, tx, "INSERT dbo.Incarichi(IDPersonale,id_tipo_incarico,Data_inizio,principale,ID_Uff1,ID_Uff2,ID_Uff3) VALUES(@id,-1,@ora,1,@u1,@u2,@u3)",P("@id",SqlDbType.Int,id),P("@ora",SqlDbType.DateTime,ora),P("@u1",SqlDbType.Int,AppConfig.UfficioLivello1Vuoto),P("@u2",SqlDbType.Int,AppConfig.UfficioLivello2Vuoto),P("@u3",SqlDbType.Int,AppConfig.UfficioLivello3Vuoto));
-                        tx.Commit(); return id;
+                        Esegui(connection,tx,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,'Creazione utente',@ora,@utente,'',@dopo)",P("@id",SqlDbType.Int,id),P("@ora",SqlDbType.DateTime,ora),P("@utente",SqlDbType.VarChar,255,CrudLogger.UtenteCorrente),P("@dopo",SqlDbType.VarChar,255,(dati.Militare?"Militare":"Civile")+"; "+dati.Cognome+" "+dati.Nome+"; CF="+dati.CodiceFiscale));
+                        tx.Commit(); CrudLogger.Info("CREATE", "Personale", "IDPersonale="+id+"; tipo="+(dati.Militare?"Militare":"Civile")); return id;
                     }
-                    catch { tx.Rollback(); throw; }
+                    catch(Exception ex) { tx.Rollback(); CrudLogger.Errore("CREATE", "Personale", "CF="+dati.CodiceFiscale, ex); throw; }
                 }
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using WebGestPersV2.Configuration;
+using WebGestPersV2.Infrastructure;
 using WebGestPersV2.Models;
 
 namespace WebGestPersV2.Data
@@ -57,8 +58,9 @@ namespace WebGestPersV2.Data
                         string dopo = dati.IdTipoIncarico + "|" + DataTesto(dati.DataInizio) + "|" + dati.Principale + "|" + Valore(dati.IdUfficio1) + "|" + Valore(dati.IdUfficio2) + "|" + Valore(dati.IdUfficio3);
                         Esegui(c, tx, "INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@persona,@campo,@ora,@utente,@prima,@dopo)", Parametro("@persona", dati.IdPersonale), Testo("@campo", dati.IdIncarico.HasValue ? "Modifica incarico" : "Inserimento incarico"), new SqlParameter("@ora", SqlDbType.DateTime) { Value = DateTime.Now }, Testo("@utente", utente), Testo("@prima", prima), Testo("@dopo", dopo));
                         tx.Commit();
+                        CrudLogger.Info(dati.IdIncarico.HasValue ? "UPDATE" : "CREATE", "Incarico", "IDPersonale="+dati.IdPersonale+(dati.IdIncarico.HasValue?"; id_incarico="+dati.IdIncarico.Value:""));
                     }
-                    catch { tx.Rollback(); throw; }
+                    catch(Exception ex) { tx.Rollback(); CrudLogger.Errore(dati.IdIncarico.HasValue ? "UPDATE" : "CREATE", "Incarico", "IDPersonale="+dati.IdPersonale, ex); throw; }
                 }
             }
         }
@@ -110,8 +112,9 @@ namespace WebGestPersV2.Data
                         Esegui(c, tx, "INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@persona,'Incarico chiuso',@ora,@utente,@prima,@dopo)",
                             Parametro("@persona", idPersonale), new SqlParameter("@ora", SqlDbType.DateTime) { Value = DateTime.Now }, Testo("@utente", utente), Testo("@prima", descrizione), Testo("@dopo", "—"));
                         tx.Commit();
+                        CrudLogger.Info("DELETE", "Incarico", "Chiusura e storicizzazione; IDPersonale="+idPersonale+"; id_incarico="+idIncarico);
                     }
-                    catch { tx.Rollback(); throw; }
+                    catch(Exception ex) { tx.Rollback(); CrudLogger.Errore("DELETE", "Incarico", "IDPersonale="+idPersonale+"; id_incarico="+idIncarico, ex); throw; }
                 }
             }
         }

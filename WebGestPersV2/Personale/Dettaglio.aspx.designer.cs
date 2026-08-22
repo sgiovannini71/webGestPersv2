@@ -23,5 +23,6 @@ namespace WebGestPersV2.Personale
         protected global::System.Web.UI.WebControls.Literal Area, Subarea, ManagementBand, PayBand, CivilianUpdatedAt, Notes;
         protected global::System.Web.UI.WebControls.GridView AssignmentsGrid;
         protected global::System.Web.UI.WebControls.GridView AssignmentHistoryGrid;
+        protected global::System.Web.UI.WebControls.GridView ModificationHistoryGrid;
     }
 }

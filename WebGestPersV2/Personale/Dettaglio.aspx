@@ -14,6 +14,7 @@
                 <p class="eyebrow"><asp:Literal ID="PersonnelType" runat="server" /></p>
                 <h1><asp:Literal ID="FullName" runat="server" /></h1>
                 <asp:HyperLink ID="EditLink" runat="server" CssClass="button" Visible="false">Modifica dati</asp:HyperLink>
+                <a class="button secondary" href="#storico-modifiche">Storico modifiche</a>
             </div>
         </div>
         <nav class="section-nav" aria-label="Sezioni del profilo">
@@ -22,6 +23,7 @@
             <a href="#profilo">Profilo</a>
             <a href="#incarichi">Incarichi</a>
             <a href="#storico-incarichi">Storico incarichi</a>
+            <a href="#storico-modifiche">Storico modifiche</a>
             <a href="#note">Note</a>
         </nav>
         <section id="dati-generali" class="card detail-section anchor-section">
@@ -139,6 +141,19 @@
                     <asp:CheckBoxField DataField="Principale" HeaderText="Principale" />
                     <asp:BoundField DataField="DataInizioTesto" HeaderText="Data inizio" />
                     <asp:BoundField DataField="DataFineTesto" HeaderText="Data fine" />
+                </Columns>
+            </asp:GridView>
+        </section>
+        <section id="storico-modifiche" class="card detail-section anchor-section">
+            <h2>Storico modifiche</h2>
+            <p class="field-hint">Elenca le modifiche registrate sui dati del dipendente, dalla più recente.</p>
+            <asp:GridView ID="ModificationHistoryGrid" runat="server" AutoGenerateColumns="false" CssClass="data-grid" GridLines="None" EmptyDataText="Nessuna modifica registrata.">
+                <Columns>
+                    <asp:BoundField DataField="DataModificaTesto" HeaderText="Data e ora" />
+                    <asp:BoundField DataField="CampoVariato" HeaderText="Campo modificato" />
+                    <asp:BoundField DataField="ValoreVecchio" HeaderText="Valore precedente" />
+                    <asp:BoundField DataField="ValoreNuovo" HeaderText="Nuovo valore" />
+                    <asp:BoundField DataField="UtenteModificatore" HeaderText="Utente" />
                 </Columns>
             </asp:GridView>
         </section>

@@ -13,7 +13,7 @@
 <body>
 <form id="MainForm" runat="server">
     <header class="site-header">
-        <a class="brand" href="<%= ResolveUrl("~/Default.aspx") %>">WebGestPers <span>v2</span></a>
+        <a class="brand" href="<%= ResolveUrl("~/Default.aspx") %>"><img class="brand-logo" src="<%= ResolveUrl("~/img/nuovo_logo_armaereo.png") %>" alt="Logo Arma Aeronautica" /><span class="brand-name">WebGestPers <span>v2</span></span></a>
         <nav><a href="<%= ResolveUrl("~/Personale/Elenco.aspx") %>">Personale</a> <a href="<%= ResolveUrl("~/Personale/Nuovo.aspx") %>">Nuovo inserimento</a> <a href="<%= ResolveUrl("~/Gestione/Indice.aspx") %>">Tabelle di gestione</a> <a href="<%= ResolveUrl("~/Report/Indice.aspx") %>">Report</a> <a href="<%= ResolveUrl("~/Help/Default.aspx") %>">Help</a></nav>
         <div class="current-user"><asp:LoginName ID="CurrentUser" runat="server" /></div>
     </header>

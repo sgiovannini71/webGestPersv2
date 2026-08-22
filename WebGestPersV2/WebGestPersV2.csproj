@@ -44,13 +44,18 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\site.css" />
     <Content Include="Content\help.css" />
     <Content Include="Content\report.css" />
     <Content Include="Default.aspx" />
+    <Content Include="Organigramma.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="img\**\*.*" />
     <Content Include="Account\AccessoNegato.aspx" />
     <Content Include="Personale\Elenco.aspx" />
     <Content Include="Site.Master" />
@@ -79,7 +84,9 @@
     <Compile Include="Data\PersonaleRepository.cs" />
     <Compile Include="Data\PersonaleWriteRepository.cs" />
     <Compile Include="Data\TabelleGestioneRepository.cs" />
+    <Compile Include="Data\OrganigrammaRepository.cs" />
     <Compile Include="Configuration\AppConfig.cs" />
+    <Compile Include="Infrastructure\CrudLogger.cs" />
     <Compile Include="Account\AccessoNegato.aspx.cs">
       <DependentUpon>AccessoNegato.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -93,6 +100,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Organigramma.aspx.cs">
+      <DependentUpon>Organigramma.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Organigramma.aspx.designer.cs">
+      <DependentUpon>Organigramma.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -171,6 +185,9 @@
     <Compile Include="Security\LivelloUtente.cs" />
     <Compile Include="Security\UtenteAutorizzato.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\Logs\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v16.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>
@@ -181,7 +198,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50284/</IISUrl>
+          <IISUrl>http://localhost:50831/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

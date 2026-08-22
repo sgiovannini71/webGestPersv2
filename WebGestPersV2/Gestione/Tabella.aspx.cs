@@ -3,6 +3,7 @@ using System.Data;
 using System.Web.UI.WebControls;
 using WebGestPersV2.Data;
 using WebGestPersV2.Models;
+using WebGestPersV2.Infrastructure;
 
 namespace WebGestPersV2.Gestione
 {
@@ -123,9 +124,10 @@ namespace WebGestPersV2.Gestione
                 new TabelleGestioneRepository().SalvaUfficio(Definizione.Codice,OfficeOriginalKey.Value,
                     int.TryParse(ParentOffice1.SelectedValue,out u1)?(int?)u1:null,int.TryParse(ParentOffice2.SelectedValue,out u2)?(int?)u2:null,
                     OfficeCode.Text,OfficeDescription.Text,OfficeOrder.Text,OfficeCompetences.Text,OfficeActive.SelectedValue);
+                CrudLogger.Info(string.IsNullOrEmpty(OfficeOriginalKey.Value)?"CREATE":"UPDATE","Tabella "+Definizione.Codice,"chiave="+OfficeOriginalKey.Value+"; sigla="+OfficeCode.Text);
                 Response.Redirect("Tabella.aspx?tipo="+Server.UrlEncode(Definizione.Codice),false);Context.ApplicationInstance.CompleteRequest();
             }
-            catch(Exception ex){Message.Text=Server.HtmlEncode(ex.Message);Message.Visible=true;}
+            catch(Exception ex){CrudLogger.Errore("SAVE","Tabella "+Definizione.Codice,"Ufficio",ex);Message.Text=Server.HtmlEncode(ex.Message);Message.Visible=true;}
         }
 
         private void CaricaModificaCivile(string codice)
@@ -149,9 +151,10 @@ namespace WebGestPersV2.Gestione
             {
                 string[] v={CivilField1.Text,CivilField2.Text,CivilField3.Text,CivilField4.Text,CivilField5.Text,CivilField6.Text,CivilField7.Text,CivilField8.Text,""};
                 new TabelleGestioneRepository().SalvaCivile(Definizione.Codice,CivilOriginalKey.Value,v);
+                CrudLogger.Info(string.IsNullOrEmpty(CivilOriginalKey.Value)?"CREATE":"UPDATE","Tabella "+Definizione.Codice,"chiave="+CivilOriginalKey.Value);
                 Response.Redirect("Tabella.aspx?tipo="+Server.UrlEncode(Definizione.Codice),false);Context.ApplicationInstance.CompleteRequest();
             }
-            catch(Exception ex){Message.Text=Server.HtmlEncode(ex.Message);Message.Visible=true;}
+            catch(Exception ex){CrudLogger.Errore("SAVE","Tabella "+Definizione.Codice,"Ambito civile",ex);Message.Text=Server.HtmlEncode(ex.Message);Message.Visible=true;}
         }
 
         private void CaricaModificaMilitare(string codice)
@@ -173,9 +176,10 @@ namespace WebGestPersV2.Gestione
                 int arma;new TabelleGestioneRepository().SalvaMilitare(Definizione.Codice,MilitaryOriginalKey.Value,
                     int.TryParse(MilitaryArmedForce.SelectedValue,out arma)?(int?)arma:null,MilitaryGrouping.SelectedValue,
                     MilitaryCode.Text,MilitaryDescription.Text,MilitaryOrder.Text,MilitaryGeneralLevel.Text,MilitaryHierarchyLevel.Text);
+                CrudLogger.Info(string.IsNullOrEmpty(MilitaryOriginalKey.Value)?"CREATE":"UPDATE","Tabella "+Definizione.Codice,"chiave="+MilitaryOriginalKey.Value+"; sigla="+MilitaryCode.Text);
                 Response.Redirect("Tabella.aspx?tipo="+Server.UrlEncode(Definizione.Codice),false);Context.ApplicationInstance.CompleteRequest();
             }
-            catch(Exception ex){Message.Text=Server.HtmlEncode(ex.Message);Message.Visible=true;}
+            catch(Exception ex){CrudLogger.Errore("SAVE","Tabella "+Definizione.Codice,"Ambito militare",ex);Message.Text=Server.HtmlEncode(ex.Message);Message.Visible=true;}
         }
 
         private void CaricaModifica(string codice)
@@ -193,10 +197,11 @@ namespace WebGestPersV2.Gestione
             try
             {
                 new TabelleGestioneRepository().SalvaSemplice(Definizione.Codice,OriginalKey.Value,Field1.Text,Field2.Text,Field3.Text);
+                CrudLogger.Info(string.IsNullOrEmpty(OriginalKey.Value)?"CREATE":"UPDATE","Tabella "+Definizione.Codice,"chiave="+OriginalKey.Value+"; valore="+Field1.Text);
                 Response.Redirect("Tabella.aspx?tipo="+Server.UrlEncode(Definizione.Codice),false);
                 Context.ApplicationInstance.CompleteRequest();
             }
-            catch(Exception ex){Message.Text=Server.HtmlEncode(ex.Message);Message.Visible=true;}
+            catch(Exception ex){CrudLogger.Errore("SAVE","Tabella "+Definizione.Codice,"Tabella semplice",ex);Message.Text=Server.HtmlEncode(ex.Message);Message.Visible=true;}
         }
 
         protected void Items_RowDataBound(object sender,GridViewRowEventArgs e)

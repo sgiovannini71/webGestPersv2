@@ -5,7 +5,7 @@
         <p class="eyebrow">Nuova applicazione</p>
         <h1>Gestione del personale</h1>
         <p>Gestione delle informazioni anagrafiche, dei profili e degli incarichi del personale.</p>
-        <div class="home-actions"><a class="button" href="Personale/Elenco.aspx">Apri elenco personale</a><a class="button secondary" href="Help/Default.aspx">Help</a></div>
+        <div class="home-actions"><a class="button" href="Personale/Elenco.aspx">Apri elenco personale</a><a class="button secondary" href="Organigramma.aspx">Personale per unità</a><a class="button secondary" href="Help/Default.aspx">Help</a></div>
     </section>
     <section class="home-reports" aria-labelledby="reports-title">
         <div class="section-heading"><p class="eyebrow">Analisi ed esportazioni</p><h2 id="reports-title">Report</h2><p>Prospetti operativi derivati dai report della versione legacy.</p></div>

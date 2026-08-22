@@ -44,6 +44,8 @@ namespace WebGestPersV2.Personale
                 AssignmentsGrid.DataBind();
                 AssignmentHistoryGrid.DataSource = new PersonaleRepository().CercaStoricoIncarichi(idPersonale);
                 AssignmentHistoryGrid.DataBind();
+                ModificationHistoryGrid.DataSource = new PersonaleRepository().CercaStoricoModifiche(idPersonale);
+                ModificationHistoryGrid.DataBind();
             }
             catch (Exception) { MostraErrore("Impossibile caricare il dettaglio. Verificare la connessione a DipendentiDB."); }
         }

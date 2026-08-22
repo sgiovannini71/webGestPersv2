@@ -6,8 +6,54 @@ using WebGestPersV2.Models;
 
 namespace WebGestPersV2.Data
 {
+    public sealed class StoricoModificaListaItem
+    {
+        public int IdStorico { get; set; }
+        public string CampoVariato { get; set; }
+        public DateTime? DataModifica { get; set; }
+        public string UtenteModificatore { get; set; }
+        public string ValoreVecchio { get; set; }
+        public string ValoreNuovo { get; set; }
+
+        public string DataModificaTesto
+        {
+            get { return DataModifica.HasValue ? DataModifica.Value.ToString("dd/MM/yyyy HH:mm:ss") : string.Empty; }
+        }
+    }
+
     public sealed class PersonaleRepository
     {
+        public IList<StoricoModificaListaItem> CercaStoricoModifiche(int idPersonale)
+        {
+            const string sql = @"SELECT ID_Storico, Campo_Variato, Data_Modifica,
+                                        Utente_Modificatore, Valore_Vecchio, Valore_Nuovo
+                                 FROM dbo.StoricoModifiche
+                                 WHERE IDPersonale = @IdPersonale
+                                 ORDER BY Data_Modifica DESC, ID_Storico DESC";
+            var risultati = new List<StoricoModificaListaItem>();
+            using (var connection = new SqlConnection(Db.ConnectionString))
+            using (var command = new SqlCommand(sql, connection))
+            {
+                command.Parameters.Add("@IdPersonale", SqlDbType.Int).Value = idPersonale;
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        risultati.Add(new StoricoModificaListaItem {
+                            IdStorico = reader.GetInt32(0),
+                            CampoVariato = Testo(reader, 1),
+                            DataModifica = Data(reader, 2),
+                            UtenteModificatore = Testo(reader, 3),
+                            ValoreVecchio = Testo(reader, 4),
+                            ValoreNuovo = Testo(reader, 5)
+                        });
+                    }
+                }
+            }
+            return risultati;
+        }
+
         public IList<StoricoIncaricoListaItem> CercaStoricoIncarichi(int idPersonale)
         {
             const string sql = @"SELECT id_incarico, Incarico, principale, data_inizio, date_fine
@@ -188,7 +234,37 @@ namespace WebGestPersV2.Data
             return string.IsNullOrWhiteSpace(provincia) ? nome : nome + " (" + provincia + ")";
         }
 
-        public IList<PersonaListaItem> Cerca(string testo, int massimoRisultati)
+        public IList<LookupItem> GradiPerFiltro(int? idArma, string categorico)
+        {
+            const string sql = @"SELECT g.ID_Grado, RTRIM(f.SiglaArma)+' · '+RTRIM(g.SiglaGrado) + CASE WHEN ISNULL(g.Descr_grado,'')='' THEN '' ELSE ' - '+g.Descr_grado END
+                                 FROM dbo.Gradi g INNER JOIN dbo.FFAA f ON f.ID_Arma=g.ID_Arma
+                                 WHERE (@Arma IS NULL OR g.ID_Arma=@Arma) AND (@Categorico='' OR g.Categorico=@Categorico)
+                                 ORDER BY g.LivelloGerarchico,g.SiglaGrado";
+            return LeggiLookup(sql,
+                new SqlParameter("@Arma", SqlDbType.Int) { Value = (object)idArma ?? DBNull.Value },
+                new SqlParameter("@Categorico", SqlDbType.VarChar, 1) { Value = categorico ?? string.Empty });
+        }
+
+        public IList<LookupItem> ProfiliCiviliPerFiltro()
+        {
+            return LeggiLookup("SELECT ID_Titolo,RTRIM(Sigla_titolo)+CASE WHEN ISNULL(Descr,'')='' THEN '' ELSE ' - '+Descr END FROM dbo.Titoli ORDER BY livello,Sigla_titolo");
+        }
+
+        private IList<LookupItem> LeggiLookup(string sql, params SqlParameter[] parametri)
+        {
+            var risultati = new List<LookupItem>();
+            using (var connection = new SqlConnection(Db.ConnectionString))
+            using (var command = new SqlCommand(sql, connection))
+            {
+                if (parametri != null && parametri.Length > 0) command.Parameters.AddRange(parametri);
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                    while (reader.Read()) risultati.Add(new LookupItem { Value = Convert.ToString(reader.GetValue(0)), Text = Testo(reader, 1) });
+            }
+            return risultati;
+        }
+
+        public IList<PersonaListaItem> Cerca(string testo, int massimoRisultati, string tipoPersonale, int? idGrado, int? idArma, string categorico, int? idProfilo)
         {
             const string sql = @"SELECT TOP (@Massimo)
                                      ep.IDPersonale,
@@ -200,7 +276,11 @@ namespace WebGestPersV2.Data
                                      CASE
                                          WHEN ep.Militare = 1 THEN g.SiglaGrado
                                          ELSE t.Sigla_titolo
-                                     END AS GradoProfilo
+                                     END AS GradoProfilo,
+                                     ti.Descr_incarico AS IncaricoPrincipale,
+                                     RTRIM(l1.SgUff1)+CASE WHEN ISNULL(l1.DescUff1,'')='' THEN '' ELSE ' - '+l1.DescUff1 END AS UfficioLivello1,
+                                     RTRIM(l2.SgUff2)+CASE WHEN ISNULL(l2.DescUff2,'')='' THEN '' ELSE ' - '+l2.DescUff2 END AS UfficioLivello2,
+                                     RTRIM(l3.SgUff3)+CASE WHEN ISNULL(l3.DescUff3,'')='' THEN '' ELSE ' - '+l3.DescUff3 END AS UfficioLivello3
                                  FROM dbo.ElencoPersonale AS ep
                                  LEFT JOIN dbo.Profilo_militare AS pm
                                      ON ep.IDPersonale = pm.IDPersonale AND ep.Militare = 1
@@ -210,8 +290,23 @@ namespace WebGestPersV2.Data
                                      ON ep.IDPersonale = pc.IDPersonale AND ep.Militare = 0
                                  LEFT JOIN dbo.Titoli AS t
                                      ON pc.ID_TitoloAtt = t.ID_Titolo
+                                 OUTER APPLY (
+                                     SELECT TOP (1) i.id_tipo_incarico,i.ID_Uff1,i.ID_Uff2,i.ID_Uff3
+                                     FROM dbo.Incarichi i
+                                     WHERE i.IDPersonale=ep.IDPersonale AND i.principale=1
+                                     ORDER BY i.Data_inizio DESC,i.id_incarico DESC
+                                 ) AS ip
+                                 LEFT JOIN dbo.Tipo_incarichi AS ti ON ti.id_tipo_incarico=ip.id_tipo_incarico
+                                 LEFT JOIN dbo.Liv1Uff AS l1 ON l1.ID_Uff1=ip.ID_Uff1
+                                 LEFT JOIN dbo.Liv2Uff AS l2 ON l2.ID_Uff1=ip.ID_Uff1 AND l2.ID_Uff2=ip.ID_Uff2
+                                 LEFT JOIN dbo.Liv3Uff AS l3 ON l3.ID_Uff1=ip.ID_Uff1 AND l3.ID_Uff2=ip.ID_Uff2 AND l3.ID_Uff3=ip.ID_Uff3
                                  WHERE ep.Stato_Servizio = 'attivo'
                                    AND (@Testo = '' OR ep.Cognome LIKE @Ricerca OR ep.Nome LIKE @Ricerca OR ep.CodiceFiscale LIKE @Ricerca)
+                                   AND (@Tipo = '' OR (@Tipo='M' AND ep.Militare=1) OR (@Tipo='C' AND ep.Militare=0))
+                                   AND (@Grado IS NULL OR pm.ID_Grado=@Grado)
+                                   AND (@Arma IS NULL OR pm.ID_Arma=@Arma)
+                                   AND (@Categorico='' OR pm.Categorico=@Categorico)
+                                   AND (@Profilo IS NULL OR pc.ID_TitoloAtt=@Profilo)
                                  ORDER BY ep.Cognome, ep.Nome";
             var risultati = new List<PersonaListaItem>();
             using (var connection = new SqlConnection(Db.ConnectionString))
@@ -221,6 +316,11 @@ namespace WebGestPersV2.Data
                 command.Parameters.Add("@Massimo", SqlDbType.Int).Value = massimoRisultati;
                 command.Parameters.Add("@Testo", SqlDbType.VarChar, 50).Value = filtro;
                 command.Parameters.Add("@Ricerca", SqlDbType.VarChar, 52).Value = "%" + filtro + "%";
+                command.Parameters.Add("@Tipo", SqlDbType.Char, 1).Value = tipoPersonale ?? string.Empty;
+                command.Parameters.Add("@Grado", SqlDbType.Int).Value = (object)idGrado ?? DBNull.Value;
+                command.Parameters.Add("@Arma", SqlDbType.Int).Value = (object)idArma ?? DBNull.Value;
+                command.Parameters.Add("@Categorico", SqlDbType.VarChar, 1).Value = categorico ?? string.Empty;
+                command.Parameters.Add("@Profilo", SqlDbType.Int).Value = (object)idProfilo ?? DBNull.Value;
                 connection.Open();
                 using (var reader = command.ExecuteReader())
                 {
@@ -231,7 +331,8 @@ namespace WebGestPersV2.Data
                             CodiceFiscale = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
                             StatoServizio = reader.GetString(4),
                             Militare = reader.GetBoolean(5),
-                            GradoProfilo = reader.IsDBNull(6) ? string.Empty : reader.GetString(6)
+                            GradoProfilo = Testo(reader, 6), IncaricoPrincipale = Testo(reader, 7),
+                            UfficioLivello1 = Testo(reader, 8), UfficioLivello2 = Testo(reader, 9), UfficioLivello3 = Testo(reader, 10)
                         });
                     }
                 }
