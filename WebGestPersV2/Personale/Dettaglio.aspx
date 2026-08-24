@@ -14,6 +14,9 @@
                 <p class="eyebrow"><asp:Literal ID="PersonnelType" runat="server" /></p>
                 <h1><asp:Literal ID="FullName" runat="server" /></h1>
                 <asp:HyperLink ID="EditLink" runat="server" CssClass="button" Visible="false">Modifica dati</asp:HyperLink>
+                <% if (!string.IsNullOrWhiteSpace(OrganizationChartPersonUrl)) { %>
+                <a class="button secondary" href="<%= Server.HtmlEncode(OrganizationChartPersonUrl) %>" target="_blank" rel="noopener noreferrer">Visualizza nell’organigramma</a>
+                <% } %>
                 <a class="button secondary" href="#storico-modifiche">Storico modifiche</a>
             </div>
         </div>

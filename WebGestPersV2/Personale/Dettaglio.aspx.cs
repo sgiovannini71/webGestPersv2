@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.IO;
 using WebGestPersV2.Configuration;
 using WebGestPersV2.Data;
@@ -8,6 +9,8 @@ namespace WebGestPersV2.Personale
 {
     public partial class Dettaglio : Security.BaseAuthenticatedPage
     {
+        protected string OrganizationChartPersonUrl { get; private set; }
+
         protected override int[] LivelliConsentiti
         {
             get
@@ -56,6 +59,12 @@ namespace WebGestPersV2.Personale
         {
             DetailsPanel.Visible = true;
             PersonnelType.Text = p.TipoPersonale; FullName.Text = Server.HtmlEncode(p.Cognome + " " + p.Nome);
+            string organizationChartBaseUrl = ConfigurationManager.AppSettings["URLOrganizationChart"]
+                ?? ConfigurationManager.AppSettings["URLOrgChart"]
+                ?? string.Empty;
+            OrganizationChartPersonUrl = string.IsNullOrWhiteSpace(organizationChartBaseUrl)
+                ? string.Empty
+                : organizationChartBaseUrl.Trim().TrimEnd('/') + "/#/?employee=" + p.IdPersonale;
             ProfilePhoto.ImageUrl = ResolveUrl(PercorsoFoto(p));
             int livello = UtenteCorrente.Livello;
             EditLink.Visible = livello == 200 || livello == 170 || (p.Militare && livello == 150) || (!p.Militare && livello == 160);
