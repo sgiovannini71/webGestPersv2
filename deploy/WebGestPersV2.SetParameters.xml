@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="WebgestPersV2" />
+  <setParameter name="DipendentiDBConnectionString-Web.config Connection String" value="" />
+  <setParameter name="DipendentiDB-Web.config Connection String" value="Data Source=DAAT1PD01\DAAA_SQL,1433;  Initial Catalog=DipendentiDB;  User ID=utente_dbpers;  Password=Password.2026;  Max Pool Size=75;      Min Pool Size=5;MultipleActiveResultSets=True" />
+</parameters>

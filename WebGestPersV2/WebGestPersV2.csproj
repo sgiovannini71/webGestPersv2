@@ -243,6 +243,10 @@
   <ItemGroup>
     <Folder Include="App_Data\Logs\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="img\foto\allinea-fotodipendenti.bat" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v16.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>
