@@ -31,3 +31,70 @@
 .org-person-type.civile { background: #fff0dc; color: #925b12; }
 @media (max-width: 900px) { .organigramma-tools { grid-template-columns: 1fr 1fr; } .organigramma-tools .form-actions { grid-column: 1 / -1; } }
 @media (max-width: 620px) { .organigramma-tools { grid-template-columns: 1fr; } .organigramma-tools .form-actions { grid-column: auto; } .org-branch .org-branch { margin-left: 10px; padding-left: 9px; } .org-people { margin-left: 8px; } }
+.success {
+    background: #ecfdf3;
+    color: #067647;
+}
+
+.photo-upload {
+    margin: 0 0 18px;
+    padding: 0;
+    overflow: hidden;
+}
+
+    .photo-upload summary {
+        padding: 16px 22px;
+        color: var(--brand);
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        user-select: none;
+    }
+
+        .photo-upload summary:hover,
+        .photo-upload summary:focus {
+            background: #f8fafc;
+        }
+
+    .photo-upload[open] summary {
+        border-bottom: 1px solid var(--line);
+    }
+
+.photo-upload-content {
+    padding: 18px 22px;
+}
+
+.photo-upload .field-hint {
+    margin: 0 0 12px;
+}
+
+.photo-upload-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+    .photo-upload-actions input[type="file"] {
+        max-width: 100%;
+        padding: 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        background: #fff;
+    }
+
+.photo-upload .message {
+    margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+    .photo-upload-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+        .photo-upload-actions .button {
+            width: 100%;
+        }
+}
+

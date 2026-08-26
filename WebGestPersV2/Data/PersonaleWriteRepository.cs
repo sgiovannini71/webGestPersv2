@@ -11,7 +11,232 @@ namespace WebGestPersV2.Data
 {
     public sealed class PersonaleWriteRepository
     {
-        public void AggiornaDatiGenerali(ModificaPersonaleRequest dati, string modificatoDa)
+        public void AggiornaImmagine(
+              int idPersonale,
+              string nomeFile,
+              string modificatoDa)
+        {
+            if (idPersonale <= 0)
+            {
+                throw new ArgumentException(
+                    "Identificativo del personale non valido.",
+                    "idPersonale");
+            }
+
+            nomeFile = (nomeFile ?? string.Empty).Trim();
+
+            string nomeAtteso = idPersonale + ".jpg";
+
+            if (!string.Equals(
+                nomeFile,
+                nomeAtteso,
+                StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException(
+                    "Il nome dell'immagine deve essere "
+                    + nomeAtteso
+                    + ".",
+                    "nomeFile");
+            }
+
+            if (string.IsNullOrWhiteSpace(modificatoDa))
+                modificatoDa = CrudLogger.UtenteCorrente;
+
+            using (var connection =
+                new SqlConnection(Db.ConnectionString))
+            {
+                connection.Open();
+
+                using (SqlTransaction transaction =
+                    connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string valorePrecedente;
+
+                        const string selectSql = @"
+  SELECT ImgPath
+  FROM dbo.ElencoPersonale WITH (UPDLOCK)
+  WHERE IDPersonale = @IdPersonale";
+
+                        using (var command =
+                            new SqlCommand(
+                                selectSql,
+                                connection,
+                                transaction))
+                        {
+                            command.Parameters
+                                .Add(
+                                    "@IdPersonale",
+                                    SqlDbType.Int)
+                                .Value = idPersonale;
+
+                            object risultato =
+                                command.ExecuteScalar();
+
+                            if (risultato == null)
+                            {
+                                throw new InvalidOperationException(
+                                    "Persona non trovata.");
+                            }
+
+                            valorePrecedente =
+                                risultato == DBNull.Value
+                                    ? string.Empty
+                                    : Convert.ToString(risultato);
+                        }
+
+                        DateTime dataModifica = DateTime.Now;
+
+                        const string updateSql = @"
+  UPDATE dbo.ElencoPersonale
+  SET ImgPath = @ImgPath,
+      Data_Versione_Profilo = @DataModifica
+  WHERE IDPersonale = @IdPersonale";
+
+                        using (var command =
+                            new SqlCommand(
+                                updateSql,
+                                connection,
+                                transaction))
+                        {
+                            command.Parameters
+                                .Add(
+                                    "@ImgPath",
+                                    SqlDbType.VarChar,
+                                    250)
+                                .Value = nomeFile;
+
+                            command.Parameters
+                                .Add(
+                                    "@DataModifica",
+                                    SqlDbType.DateTime)
+                                .Value = dataModifica;
+
+                            command.Parameters
+                                .Add(
+                                    "@IdPersonale",
+                                    SqlDbType.Int)
+                                .Value = idPersonale;
+
+                            int righeModificate =
+                                command.ExecuteNonQuery();
+
+                            if (righeModificate != 1)
+                            {
+                                throw new InvalidOperationException(
+                                    "Aggiornamento dell'immagine "
+                                    + "non eseguito.");
+                            }
+                        }
+
+                        if (!string.Equals(
+                            (valorePrecedente ?? string.Empty).Trim(),
+                            nomeFile,
+                            StringComparison.OrdinalIgnoreCase))
+                        {
+                            const string storicoSql = @"
+  INSERT INTO dbo.StoricoModifiche
+  (
+      IDPersonale,
+      Campo_Variato,
+      Data_Modifica,
+      Utente_Modificatore,
+      Valore_Vecchio,
+      Valore_Nuovo
+  )
+  VALUES
+  (
+      @IdPersonale,
+      'ImgPath',
+      @DataModifica,
+      @Utente,
+      @ValorePrecedente,
+      @ValoreNuovo
+  )";
+
+                            using (var command =
+                                new SqlCommand(
+                                    storicoSql,
+                                    connection,
+                                    transaction))
+                            {
+                                command.Parameters
+                                    .Add(
+                                        "@IdPersonale",
+                                        SqlDbType.Int)
+                                    .Value = idPersonale;
+
+                                command.Parameters
+                                    .Add(
+                                        "@DataModifica",
+                                        SqlDbType.DateTime)
+                                    .Value = dataModifica;
+
+                                command.Parameters
+                                    .Add(
+                                        "@Utente",
+                                        SqlDbType.VarChar,
+                                        255)
+                                    .Value = modificatoDa;
+
+                                command.Parameters
+                                    .Add(
+                                        "@ValorePrecedente",
+                                        SqlDbType.VarChar,
+                                        255)
+                                    .Value =
+                                        valorePrecedente
+                                        ?? string.Empty;
+
+                                command.Parameters
+                                    .Add(
+                                        "@ValoreNuovo",
+                                        SqlDbType.VarChar,
+                                        255)
+                                    .Value = nomeFile;
+
+                                command.ExecuteNonQuery();
+                            }
+                        }
+
+                        transaction.Commit();
+
+                        CrudLogger.Info(
+                            "UPDATE",
+                            "Foto personale",
+                            "IDPersonale="
+                            + idPersonale
+                            + "; ImgPath="
+                            + nomeFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        try
+                        {
+                            transaction.Rollback();
+                        }
+                        catch
+                        {
+                            // L'errore originale rimane quello
+                            // significativo da registrare.
+                        }
+
+                        CrudLogger.Errore(
+                            "UPDATE",
+                            "Foto personale",
+                            "IDPersonale=" + idPersonale,
+                            ex);
+
+                        throw;
+                    }
+                }
+            }
+        }
+
+
+
+            public void AggiornaDatiGenerali(ModificaPersonaleRequest dati, string modificatoDa)
         {
             using (var connection = new SqlConnection(Db.ConnectionString))
             {
