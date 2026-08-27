@@ -12,7 +12,7 @@
     <asp:BoundField DataField="DataInizioTesto" HeaderText="Data inizio" /><asp:BoundField DataField="UfficioLivello1" HeaderText="1° livello" />
     <asp:BoundField DataField="UfficioLivello2" HeaderText="2° livello" /><asp:BoundField DataField="UfficioLivello3" HeaderText="3° livello" />
     <asp:TemplateField HeaderText=""><ItemTemplate>
-     <asp:HyperLink runat="server" CssClass="button secondary" NavigateUrl='<%# UrlModifica(Eval("IdIncarico")) %>' Visible='<%# !Convert.ToBoolean(Eval("Predefinito")) %>'>Modifica</asp:HyperLink>
+     <asp:HyperLink runat="server" CssClass="button secondary" NavigateUrl='<%# UrlModifica(Eval("IdIncarico")) %>'>Modifica</asp:HyperLink>
      <asp:HyperLink runat="server" CssClass="button secondary" NavigateUrl='<%# UrlChiusura(Eval("IdIncarico")) %>' Visible='<%# !Convert.ToBoolean(Eval("Predefinito")) %>'>Chiudi</asp:HyperLink>
     </ItemTemplate></asp:TemplateField>
    </Columns>
@@ -30,13 +30,14 @@
   <h2><asp:Literal ID="FormTitle" runat="server" /></h2>
   <asp:ValidationSummary runat="server" CssClass="message error" ValidationGroup="assignment" />
   <div class="edit-grid">
-   <label>Tipo incarico*</label><asp:DropDownList ID="AssignmentType" runat="server" /><asp:RequiredFieldValidator runat="server" ControlToValidate="AssignmentType" InitialValue="" ErrorMessage="Tipo incarico obbligatorio." ValidationGroup="assignment" CssClass="field-error" />
+   <label>Tipo incarico*</label><asp:DropDownList ID="AssignmentType" runat="server" AutoPostBack="true" OnSelectedIndexChanged="AssignmentType_Changed" /><asp:RequiredFieldValidator runat="server" ControlToValidate="AssignmentType" InitialValue="" ErrorMessage="Tipo incarico obbligatorio." ValidationGroup="assignment" CssClass="field-error" />
    <label>Data inizio</label><asp:TextBox ID="StartDate" runat="server" TextMode="Date" /><span></span>
    <label>Incarico principale</label><asp:CheckBox ID="IsPrimary" runat="server" Text="Sì" /><span class="field-hint">Gli altri incarichi saranno impostati come non principali.</span>
-   <label>Ufficio di 1° livello</label><asp:DropDownList ID="Office1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="Office1_Changed" /><span></span>
+   <label>Ufficio di 1° livello<asp:Literal ID="Office1RequiredMark" runat="server" /></label><asp:DropDownList ID="Office1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="Office1_Changed" /><asp:RequiredFieldValidator ID="Office1Validator" runat="server" ControlToValidate="Office1" InitialValue="" ErrorMessage="Ufficio di primo livello obbligatorio per l'incarico selezionato." ValidationGroup="assignment" CssClass="field-error" Enabled="false" />
    <label>Ufficio di 2° livello</label><asp:DropDownList ID="Office2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="Office2_Changed" /><span></span>
    <label>Ufficio di 3° livello</label><asp:DropDownList ID="Office3" runat="server" /><span></span>
   </div>
+  <asp:Panel ID="DefaultAssignmentHint" runat="server" CssClass="message info" Visible="false">Per l’incarico predefinito <strong>Non assegnato</strong> vengono applicati automaticamente gli uffici configurati come predefiniti.</asp:Panel>
   <div class="form-actions"><asp:Button ID="SaveButton" runat="server" Text="Salva incarico" CssClass="button" ValidationGroup="assignment" OnClick="SaveButton_Click" /><asp:HyperLink ID="CancelLink" runat="server" CssClass="button secondary">Annulla</asp:HyperLink></div>
  </asp:Panel>
  <section class="card detail-section">

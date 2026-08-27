@@ -3,6 +3,10 @@ namespace WebGestPersV2.Personale
     public partial class Modifica
     {
         protected global::System.Web.UI.WebControls.Label Message;
+        protected global::System.Web.UI.WebControls.HyperLink TopBackLink;
+        protected global::System.Web.UI.WebControls.Panel InactivePhotoPanel;
+        protected global::System.Web.UI.WebControls.Image InactiveProfilePhoto;
+        protected global::System.Web.UI.WebControls.Literal EditingPersonName;
         protected global::System.Web.UI.WebControls.Panel ReactivationMessage;
         protected global::System.Web.UI.WebControls.TextBox LastName, FirstName, TaxCode, AssignmentDate, SourceOrganization, OfficePhone, Room, ExitDate, AssignmentsClosingDate;
         protected global::System.Web.UI.WebControls.DropDownList EducationTitle, TimeBand, ServiceStatus, MilitaryPosition, ArmedForce, Category, Rank, MilitaryCategory, MilitaryRole, MilitarySpecialty;

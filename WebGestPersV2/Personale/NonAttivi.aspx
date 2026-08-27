@@ -12,7 +12,7 @@
   <asp:Label ID="Message" runat="server" CssClass="message error" Visible="false" />
   <asp:Label ID="ResultCount" runat="server" CssClass="result-count" />
   <asp:GridView ID="PeopleGrid" runat="server" AutoGenerateColumns="false" CssClass="data-grid" GridLines="None" EmptyDataText="Nessuna persona non attiva trovata."><Columns>
-   <asp:BoundField DataField="IdPersonale" HeaderText="ID"/><asp:BoundField DataField="Cognome" HeaderText="Cognome"/><asp:BoundField DataField="Nome" HeaderText="Nome"/><asp:BoundField DataField="CodiceFiscale" HeaderText="Codice fiscale"/><asp:BoundField DataField="GradoProfilo" HeaderText="Grado/Profilo"/><asp:BoundField DataField="StatoServizio" HeaderText="Stato di servizio"/><asp:HyperLinkField Text="Modifica / Riattiva" DataNavigateUrlFields="IdPersonale" DataNavigateUrlFormatString="Modifica.aspx?id={0}" />
+   <asp:BoundField DataField="IdPersonale" HeaderText="ID"/><asp:BoundField DataField="Cognome" HeaderText="Cognome"/><asp:BoundField DataField="Nome" HeaderText="Nome"/><asp:BoundField DataField="CodiceFiscale" HeaderText="Codice fiscale"/><asp:BoundField DataField="GradoProfilo" HeaderText="Grado/Profilo"/><asp:BoundField DataField="StatoServizio" HeaderText="Stato di servizio"/><asp:HyperLinkField Text="Modifica / Riattiva" DataNavigateUrlFields="IdPersonale" DataNavigateUrlFormatString="Modifica.aspx?id={0}&amp;from=nonattivi" />
   </Columns></asp:GridView>
  </section>
 </asp:Content>

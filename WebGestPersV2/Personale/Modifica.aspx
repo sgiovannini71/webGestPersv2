@@ -1,8 +1,11 @@
 <%@ Page Title="Modifica personale" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Modifica.aspx.cs" Inherits="WebGestPersV2.Personale.Modifica" %>
 <asp:Content ID="Title" ContentPlaceHolderID="TitleContent" runat="server">Modifica personale</asp:Content>
 <asp:Content ID="Main" ContentPlaceHolderID="MainContent" runat="server">
- <a class="back-link" href='<%= "Dettaglio.aspx?id=" + Request.QueryString["id"] %>'>← Torna al dettaglio</a>
- <div class="page-heading"><p class="eyebrow">Amministrazione</p><h1>Modifica personale</h1></div>
+ <asp:HyperLink ID="TopBackLink" runat="server" CssClass="back-link">← Torna al dettaglio</asp:HyperLink>
+ <div class="profile-heading">
+  <asp:Panel ID="InactivePhotoPanel" runat="server" CssClass="photo-card" Visible="false"><asp:Image ID="InactiveProfilePhoto" runat="server" CssClass="profile-photo" AlternateText="Foto del dipendente" /></asp:Panel>
+  <div class="page-heading"><p class="eyebrow">Amministrazione</p><h1>Modifica personale</h1><p class="field-hint"><asp:Literal ID="EditingPersonName" runat="server" /></p></div>
+ </div>
  <asp:ValidationSummary runat="server" CssClass="message error" ValidationGroup="edit" />
  <asp:Label ID="Message" runat="server" CssClass="message error" Visible="false" />
  <section class="card form-card"><div class="edit-grid">

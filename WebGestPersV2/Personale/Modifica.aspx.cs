@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Web.UI.WebControls;
+using WebGestPersV2.Configuration;
 using WebGestPersV2.Data;
 using WebGestPersV2.Models;
 
@@ -20,6 +22,7 @@ namespace WebGestPersV2.Personale
         {
             if (Id <= 0) { Response.Redirect("Elenco.aspx", true); return; }
             AssignmentsLink.NavigateUrl = "Incarichi.aspx?id=" + Id;
+            TopBackLink.NavigateUrl = "Dettaglio.aspx?id=" + Id;
             if (!IsPostBack) { CancelLink.NavigateUrl = "Dettaglio.aspx?id=" + Id; Carica(); }
         }
 
@@ -46,9 +49,14 @@ namespace WebGestPersV2.Personale
             ExitDate.Text = FormattaData(persona.DataUscita);
             AssignmentsClosingDate.Text = DateTime.Today.ToString("yyyy-MM-dd");
             bool attivo = string.Equals(persona.StatoServizio, "attivo", StringComparison.OrdinalIgnoreCase);
+            InactivePhotoPanel.Visible = !attivo;
+            EditingPersonName.Text = !attivo ? Server.HtmlEncode(persona.Cognome + " " + persona.Nome) : string.Empty;
+            if (!attivo) InactiveProfilePhoto.ImageUrl = ResolveUrl(PercorsoFoto(persona));
             ReactivationMessage.Visible = !attivo;
             AssignmentsLink.Visible = attivo;
             CancelLink.NavigateUrl = attivo ? "Dettaglio.aspx?id=" + Id : "NonAttivi.aspx";
+            TopBackLink.NavigateUrl = attivo ? "Dettaglio.aspx?id=" + Id : "NonAttivi.aspx";
+            TopBackLink.Text = attivo ? "← Torna al dettaglio" : "← Torna al personale non attivo";
 
             MilitaryPanel.Visible = persona.Militare;
             if (persona.Militare) CaricaProfiloMilitare(repository, persona);
@@ -224,6 +232,19 @@ namespace WebGestPersV2.Personale
         }
 
         private static string FormattaData(DateTime? data) { return data.HasValue ? data.Value.ToString("yyyy-MM-dd") : ""; }
+
+        private static string PercorsoFoto(PersonaDettaglio persona)
+        {
+            string percorso = (persona.ImgPath ?? string.Empty).Trim();
+            if (percorso.StartsWith("~/", StringComparison.Ordinal)) return percorso;
+            if (!string.IsNullOrWhiteSpace(percorso))
+            {
+                string nomeFile = Path.GetFileName(percorso);
+                if (!string.IsNullOrWhiteSpace(nomeFile)) return AppConfig.PhotoFileServerPath.TrimEnd('/') + "/" + nomeFile;
+            }
+            return AppConfig.GetFotoPredefinita(persona.Militare,
+                string.Equals(persona.Sesso, "Maschile", StringComparison.OrdinalIgnoreCase));
+        }
 
         private static void Bind(DropDownList controllo, IList<LookupItem> valori, string voceVuota)
         {

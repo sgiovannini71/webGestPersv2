@@ -48,17 +48,19 @@ namespace WebGestPersV2.Personale
             Bind(AssignmentType, repository.TipiIncarico(), "-- seleziona --");
             Bind(Office1, repository.UfficiPrimoLivello(), "-- nessuno --");
             FormTitle.Text = IdIncarico.HasValue ? "Modifica incarico" : "Nuovo incarico";
-            if (!IdIncarico.HasValue) { StartDate.Text = DateTime.Today.ToString("yyyy-MM-dd"); Bind(Office2, new List<LookupItem>(), "-- nessuno --"); Bind(Office3, new List<LookupItem>(), "-- nessuno --"); return; }
+            if (!IdIncarico.HasValue) { StartDate.Text = DateTime.Today.ToString("yyyy-MM-dd"); Bind(Office2, new List<LookupItem>(), "-- nessuno --"); Bind(Office3, new List<LookupItem>(), "-- nessuno --"); AggiornaObbligoUffici(); return; }
             IncaricoListaItem incarico = repository.Trova(Id, IdIncarico.Value);
             if (incarico == null) throw new InvalidOperationException("Incarico non trovato.");
             Seleziona(AssignmentType, incarico.IdTipoIncarico); Seleziona(Office1, incarico.IdUfficio1);
             CaricaSecondoLivello(repository, incarico.IdUfficio2); CaricaTerzoLivello(repository, incarico.IdUfficio3);
             StartDate.Text = incarico.DataInizio.HasValue ? incarico.DataInizio.Value.ToString("yyyy-MM-dd") : "";
             IsPrimary.Checked = incarico.Principale;
+            AggiornaObbligoUffici();
         }
 
-        protected void Office1_Changed(object sender, EventArgs e) { var r = new IncarichiWriteRepository(); CaricaSecondoLivello(r, null); Bind(Office3, new List<LookupItem>(), "-- nessuno --"); }
-        protected void Office2_Changed(object sender, EventArgs e) { CaricaTerzoLivello(new IncarichiWriteRepository(), null); }
+        protected void AssignmentType_Changed(object sender, EventArgs e) { AggiornaObbligoUffici(); }
+        protected void Office1_Changed(object sender, EventArgs e) { var r = new IncarichiWriteRepository(); CaricaSecondoLivello(r, null); Bind(Office3, new List<LookupItem>(), "-- nessuno --"); AggiornaObbligoUffici(); }
+        protected void Office2_Changed(object sender, EventArgs e) { var r = new IncarichiWriteRepository(); CaricaTerzoLivello(r, null); AggiornaObbligoUffici(); }
         protected void SaveButton_Click(object sender, EventArgs e)
         {
             Page.Validate("assignment"); if (!Page.IsValid) return;
@@ -97,6 +99,27 @@ namespace WebGestPersV2.Personale
         private void BindLista() { AssignmentsGrid.DataSource = new PersonaleRepository().CercaIncarichi(Id); AssignmentsGrid.DataBind(); }
         private void CaricaSecondoLivello(IncarichiWriteRepository r, int? selezione) { int id; Bind(Office2, int.TryParse(Office1.SelectedValue, out id) ? r.UfficiSecondoLivello(id) : new List<LookupItem>(), "-- nessuno --"); Seleziona(Office2, selezione); }
         private void CaricaTerzoLivello(IncarichiWriteRepository r, int? selezione) { int id1, id2; Bind(Office3, int.TryParse(Office1.SelectedValue, out id1) && int.TryParse(Office2.SelectedValue, out id2) ? r.UfficiTerzoLivello(id1, id2) : new List<LookupItem>(), "-- nessuno --"); Seleziona(Office3, selezione); }
+        private void AggiornaObbligoUffici()
+        {
+            int tipo;
+            bool selezionato = int.TryParse(AssignmentType.SelectedValue, out tipo);
+            bool predefinito = selezionato && TipoSelezionatoPredefinito();
+            bool ufficioObbligatorio = selezionato && !predefinito;
+            Office1Validator.Enabled = ufficioObbligatorio;
+            Office1RequiredMark.Text = ufficioObbligatorio ? "*" : "";
+            DefaultAssignmentHint.Visible = predefinito;
+            Office1.Enabled = !predefinito;
+            Office2.Enabled = !predefinito && !string.IsNullOrWhiteSpace(Office1.SelectedValue);
+            Office3.Enabled = !predefinito && !string.IsNullOrWhiteSpace(Office2.SelectedValue);
+        }
+        private bool TipoSelezionatoPredefinito()
+        {
+            ListItem selezionato = AssignmentType.SelectedItem;
+            if (selezionato == null) return false;
+            string testo = (selezionato.Text ?? string.Empty).Trim();
+            return string.Equals(testo, "n/a", StringComparison.OrdinalIgnoreCase) ||
+                   testo.StartsWith("n/a -", StringComparison.OrdinalIgnoreCase);
+        }
         private void Verifica(bool militare) { int livello = UtenteCorrente.Livello; if ((militare && livello != 150 && livello != 170 && livello != 200) || (!militare && livello != 160 && livello != 170 && livello != 200)) Response.Redirect("~/Account/AccessoNegato.aspx", true); }
         private static DateTime? ParseData(string testo, string messaggioErrore = "La data di inizio non è valida.") { if (string.IsNullOrWhiteSpace(testo)) return null; DateTime data; if (DateTime.TryParseExact(testo, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out data)) return data; throw new InvalidOperationException(messaggioErrore); }
         private static int? Selezionato(DropDownList c) { int id; return int.TryParse(c.SelectedValue, out id) ? (int?)id : null; }
