@@ -33,11 +33,11 @@
    <label>Tipo incarico*</label><asp:DropDownList ID="AssignmentType" runat="server" AutoPostBack="true" OnSelectedIndexChanged="AssignmentType_Changed" /><asp:RequiredFieldValidator runat="server" ControlToValidate="AssignmentType" InitialValue="" ErrorMessage="Tipo incarico obbligatorio." ValidationGroup="assignment" CssClass="field-error" />
    <label>Data inizio</label><asp:TextBox ID="StartDate" runat="server" TextMode="Date" /><span></span>
    <label>Incarico principale</label><asp:CheckBox ID="IsPrimary" runat="server" Text="Sì" /><span class="field-hint">Gli altri incarichi saranno impostati come non principali.</span>
-   <label>Ufficio di 1° livello<asp:Literal ID="Office1RequiredMark" runat="server" /></label><asp:DropDownList ID="Office1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="Office1_Changed" /><asp:RequiredFieldValidator ID="Office1Validator" runat="server" ControlToValidate="Office1" InitialValue="" ErrorMessage="Ufficio di primo livello obbligatorio per l'incarico selezionato." ValidationGroup="assignment" CssClass="field-error" Enabled="false" />
+   <label>Ufficio di 1° livello<asp:Literal ID="Office1RequiredMark" runat="server" /></label><asp:DropDownList ID="Office1" runat="server" AutoPostBack="true" OnSelectedIndexChanged="Office1_Changed" /><asp:RequiredFieldValidator ID="Office1Validator" runat="server" ControlToValidate="Office1" InitialValue="" ErrorMessage="Ufficio di primo livello obbligatorio." ValidationGroup="assignment" CssClass="field-error" />
+   <asp:Panel ID="DefaultAssignmentHint" runat="server" CssClass="field-hint" Visible="false"><span></span><span>Per l'incarico n/a vengono utilizzati automaticamente gli uffici predefiniti.</span><span></span></asp:Panel>
    <label>Ufficio di 2° livello</label><asp:DropDownList ID="Office2" runat="server" AutoPostBack="true" OnSelectedIndexChanged="Office2_Changed" /><span></span>
    <label>Ufficio di 3° livello</label><asp:DropDownList ID="Office3" runat="server" /><span></span>
   </div>
-  <asp:Panel ID="DefaultAssignmentHint" runat="server" CssClass="message info" Visible="false">Per l’incarico predefinito <strong>Non assegnato</strong> vengono applicati automaticamente gli uffici configurati come predefiniti.</asp:Panel>
   <div class="form-actions"><asp:Button ID="SaveButton" runat="server" Text="Salva incarico" CssClass="button" ValidationGroup="assignment" OnClick="SaveButton_Click" /><asp:HyperLink ID="CancelLink" runat="server" CssClass="button secondary">Annulla</asp:HyperLink></div>
  </asp:Panel>
  <section class="card detail-section">

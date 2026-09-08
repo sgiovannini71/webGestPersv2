@@ -35,6 +35,24 @@ namespace WebGestPersV2.Data
                             throw new InvalidOperationException("La persona non è attiva o non esiste.");
                         if (Conta(c, tx, "SELECT COUNT(*) FROM dbo.Tipo_incarichi WHERE id_tipo_incarico=@id", Parametro("@id", dati.IdTipoIncarico)) != 1)
                             throw new InvalidOperationException("Selezionare un tipo di incarico valido.");
+
+                        int idTipoPredefinito = IdTipoPredefinito(c, tx);
+                        bool predefinito = dati.IdTipoIncarico == idTipoPredefinito;
+                        if (predefinito)
+                        {
+                            if (Conta(c, tx, @"SELECT COUNT(*) FROM dbo.Incarichi
+                                WHERE IDPersonale=@persona AND (@incarico IS NULL OR id_incarico<>@incarico)",
+                                Parametro("@persona", dati.IdPersonale),
+                                new SqlParameter("@incarico", SqlDbType.Int) { Value = dati.IdIncarico.HasValue ? (object)dati.IdIncarico.Value : DBNull.Value }) != 0)
+                                throw new InvalidOperationException("L'incarico predefinito può essere assegnato solo se non esistono altri incarichi.");
+
+                            dati.IdUfficio1 = AppConfig.UfficioLivello1Vuoto;
+                            dati.IdUfficio2 = AppConfig.UfficioLivello2Vuoto;
+                            dati.IdUfficio3 = AppConfig.UfficioLivello3Vuoto;
+                            dati.Principale = true;
+                        }
+                        else if (!dati.IdUfficio1.HasValue)
+                            throw new InvalidOperationException("Indicare l'ufficio di primo livello.");
                         VerificaUffici(c, tx, dati);
 
                         string prima = "";
@@ -55,6 +73,15 @@ namespace WebGestPersV2.Data
                         else
                             Esegui(c, tx, "INSERT dbo.Incarichi(IDPersonale,id_tipo_incarico,Data_inizio,principale,ID_Uff1,ID_Uff2,ID_Uff3) VALUES(@persona,@tipo,@data,@principale,@u1,@u2,@u3)", Parametro("@persona", dati.IdPersonale), Parametro("@tipo", dati.IdTipoIncarico), Data("@data", dati.DataInizio), Bit("@principale", dati.Principale), NullableInt("@u1", dati.IdUfficio1), NullableInt("@u2", dati.IdUfficio2), NullableInt("@u3", dati.IdUfficio3));
 
+
+                        // Il tipo n/a è soltanto un segnaposto corrente: quando viene
+                        // salvato un incarico effettivo lo si elimina senza storicizzarlo.
+                        if (!predefinito)
+                            Esegui(c, tx, @"DELETE dbo.Incarichi
+                                WHERE IDPersonale=@persona AND id_tipo_incarico=@tipo
+                                  AND (@incarico IS NULL OR id_incarico<>@incarico)",
+                                Parametro("@persona", dati.IdPersonale), Parametro("@tipo", idTipoPredefinito),
+                                new SqlParameter("@incarico", SqlDbType.Int) { Value = dati.IdIncarico.HasValue ? (object)dati.IdIncarico.Value : DBNull.Value });
                         string dopo = dati.IdTipoIncarico + "|" + DataTesto(dati.DataInizio) + "|" + dati.Principale + "|" + Valore(dati.IdUfficio1) + "|" + Valore(dati.IdUfficio2) + "|" + Valore(dati.IdUfficio3);
                         Esegui(c, tx, "INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@persona,@campo,@ora,@utente,@prima,@dopo)", Parametro("@persona", dati.IdPersonale), Testo("@campo", dati.IdIncarico.HasValue ? "Modifica incarico" : "Inserimento incarico"), new SqlParameter("@ora", SqlDbType.DateTime) { Value = DateTime.Now }, Testo("@utente", utente), Testo("@prima", prima), Testo("@dopo", dopo));
                         tx.Commit();
