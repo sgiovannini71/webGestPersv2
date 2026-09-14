@@ -262,6 +262,8 @@ namespace WebGestPersV2.Data
                                 throw new InvalidOperationException("Codice fiscale già associato a un'altra persona.");
                         }
                         DateTime ora=DateTime.Now;
+                        AggiornaAnagrafica(connection, tx, dati, ora, modificatoDa);
+                        AggiornaSessoENote(connection, tx, dati, ora, modificatoDa);
                         AggiornaStatoServizio(connection,tx,dati,vecchi,ora,modificatoDa);
                         Esegui(connection,tx,@"UPDATE dbo.ElencoPersonale SET Cognome=@c,Nome=@n,CodiceFiscale=@cf,EnteProvenienza=@ente,Data_Ass_Armaereo=@data,TelefonoUfficio=@tel,NumeroStanza=@stanza,id_Tit_Studio=@titolo,IDFasciaOraria=@fascia,Data_Versione_Profilo=@ora WHERE IDPersonale=@id",
                             P("@c",SqlDbType.VarChar,30,dati.Cognome),P("@n",SqlDbType.VarChar,30,dati.Nome),P("@cf",SqlDbType.VarChar,16,dati.CodiceFiscale),P("@ente",SqlDbType.VarChar,50,dati.EnteProvenienza),P("@data",SqlDbType.DateTime,dati.DataAssegnazione.HasValue?(object)dati.DataAssegnazione.Value:DBNull.Value),P("@tel",SqlDbType.VarChar,15,dati.TelefonoUfficio),P("@stanza",SqlDbType.VarChar,5,dati.NumeroStanza),P("@titolo",SqlDbType.Int,dati.IdTitoloStudio.HasValue?(object)dati.IdTitoloStudio.Value:DBNull.Value),P("@fascia",SqlDbType.Int,dati.IdFasciaOraria.HasValue?(object)dati.IdFasciaOraria.Value:DBNull.Value),P("@ora",SqlDbType.DateTime,ora),P("@id",SqlDbType.Int,dati.IdPersonale));
@@ -393,6 +395,106 @@ namespace WebGestPersV2.Data
             foreach (var x in nuovi)
                 if (!ValoriUguali(vecchi[x.Key], x.Value))
                     Esegui(c,t,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,@campo,@ora,@utente,@prima,@dopo)",P("@id",SqlDbType.Int,d.IdPersonale),P("@campo",SqlDbType.VarChar,255,x.Key),P("@ora",SqlDbType.DateTime,ora),P("@utente",SqlDbType.VarChar,255,utente),P("@prima",SqlDbType.VarChar,255,vecchi[x.Key]),P("@dopo",SqlDbType.VarChar,255,x.Value));
+        }
+
+        public IList<LookupItem> Comuni()
+        {
+            return Leggi("SELECT ID_comune, RTRIM(Comune) + CASE WHEN ISNULL(Provincia,'')='' THEN '' ELSE ' ('+RTRIM(Provincia)+')' END FROM dbo.Comuni ORDER BY Comune, Provincia");
+        }
+
+        public IList<LookupItem> StatiCivili()
+        {
+            return Leggi("SELECT ID_StatoCivile, Descr_stato_civ FROM dbo.Stati_civili ORDER BY Descr_stato_civ");
+        }
+
+        private static void AggiornaSessoENote(SqlConnection c, SqlTransaction t, ModificaPersonaleRequest d, DateTime ora, string utente)
+        {
+            AggiornaCampiAnagrafici(c, t, "ElencoPersonale", d.IdPersonale, ora, utente,
+                new[] { "SessoM", "Note" },
+                new[] { P("@SessoM", SqlDbType.Bit, d.SessoMaschile), P("@Note", SqlDbType.VarChar, -1, d.Note) });
+        }
+
+        private static void AggiornaAnagrafica(SqlConnection c, SqlTransaction t, ModificaPersonaleRequest d, DateTime ora, string utente)
+        {
+            if (d.IdComuneNascita.HasValue && Scalar<int>(c,t,"SELECT COUNT(*) FROM dbo.Comuni WHERE ID_comune=@valore",P("@valore",SqlDbType.Int,d.IdComuneNascita.Value)) != 1)
+                throw new InvalidOperationException("Comune di nascita non valido.");
+            if (d.IdStatoCivile.HasValue && Scalar<int>(c,t,"SELECT COUNT(*) FROM dbo.Stati_civili WHERE ID_StatoCivile=@valore",P("@valore",SqlDbType.Int,d.IdStatoCivile.Value)) != 1)
+                throw new InvalidOperationException("Stato civile non valido.");
+            if (d.IdComuneResidenza.HasValue && Scalar<int>(c,t,"SELECT COUNT(*) FROM dbo.Comuni WHERE ID_comune=@valore",P("@valore",SqlDbType.Int,d.IdComuneResidenza.Value)) != 1)
+                throw new InvalidOperationException("Comune di residenza non valido.");
+            if (d.IdComuneDomicilio.HasValue && Scalar<int>(c,t,"SELECT COUNT(*) FROM dbo.Comuni WHERE ID_comune=@valore",P("@valore",SqlDbType.Int,d.IdComuneDomicilio.Value)) != 1)
+                throw new InvalidOperationException("Comune di domicilio non valido.");
+            AggiornaCampiAnagrafici(c, t, "Anagrafica_Sensibile", d.IdPersonale, ora, utente,
+                new[] { "DataNascita", "ID_Comune_Nascita", "ID_StatoCivile", "cellulare", "Indirizzo_Residenza", "ID_comune_Residenza", "Telefono_Residenza", "Indirizzo_Domicilio", "ID_comune_Domicilio", "Telefono_Domicilio", "Pass_SVZ", "Data_Pass_SVZ", "cmd", "Data_cmd", "Modello_AT", "Data_AT" },
+                new[] {
+                    P("@DataNascita", SqlDbType.DateTime, (object)d.DataNascita ?? DBNull.Value),
+                    P("@ID_Comune_Nascita", SqlDbType.Int, (object)d.IdComuneNascita ?? DBNull.Value),
+                    P("@ID_StatoCivile", SqlDbType.Int, (object)d.IdStatoCivile ?? DBNull.Value),
+                    P("@cellulare", SqlDbType.VarChar, 20, d.Cellulare),
+                    P("@Indirizzo_Residenza", SqlDbType.VarChar, 50, d.IndirizzoResidenza),
+                    P("@ID_comune_Residenza", SqlDbType.Int, (object)d.IdComuneResidenza ?? DBNull.Value),
+                    P("@Telefono_Residenza", SqlDbType.VarChar, 20, d.TelefonoResidenza),
+                    P("@Indirizzo_Domicilio", SqlDbType.VarChar, 50, d.IndirizzoDomicilio),
+                    P("@ID_comune_Domicilio", SqlDbType.Int, (object)d.IdComuneDomicilio ?? DBNull.Value),
+                    P("@Telefono_Domicilio", SqlDbType.VarChar, 20, d.TelefonoDomicilio),
+                    P("@Pass_SVZ", SqlDbType.VarChar, 20, d.PassaportoServizio),
+                    P("@Data_Pass_SVZ", SqlDbType.DateTime, (object)d.DataPassaportoServizio ?? DBNull.Value),
+                    P("@cmd", SqlDbType.VarChar, 20, d.Cmd),
+                    P("@Data_cmd", SqlDbType.DateTime, (object)d.DataCmd ?? DBNull.Value),
+                    P("@Modello_AT", SqlDbType.VarChar, 20, d.ModelloAt),
+                    P("@Data_AT", SqlDbType.DateTime, (object)d.DataAt ?? DBNull.Value),
+                });
+        }
+
+        // Table and column names come only from the fixed lists above; values are parameterized.
+        private static void AggiornaCampiAnagrafici(SqlConnection c, SqlTransaction t, string tabella,
+            int id, DateTime ora, string utente, string[] colonne, SqlParameter[] valori)
+        {
+            var precedenti = new Dictionary<string, string>();
+            bool esiste;
+            var selezione = new List<string>();
+            foreach (string colonna in colonne)
+                selezione.Add("CONVERT(nvarchar(max),[" + colonna + "],126) AS [" + colonna + "]");
+            using (var q = new SqlCommand("SELECT " + string.Join(",", selezione) + " FROM dbo.[" + tabella + "] WITH (UPDLOCK,HOLDLOCK) WHERE IDPersonale=@id", c, t))
+            {
+                q.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                using (var r = q.ExecuteReader(CommandBehavior.SingleRow))
+                {
+                    esiste = r.Read();
+                    for (int i = 0; i < colonne.Length; i++)
+                        precedenti[colonne[i]] = !esiste || r.IsDBNull(i) ? "" : r.GetString(i);
+                }
+            }
+            if (!esiste && tabella == "ElencoPersonale")
+                throw new InvalidOperationException("Persona non trovata.");
+
+            var assegnazioni = new List<string>();
+            var nomiParametri = new List<string>();
+            for (int i = 0; i < colonne.Length; i++)
+            {
+                assegnazioni.Add("[" + colonne[i] + "]=" + valori[i].ParameterName);
+                nomiParametri.Add(valori[i].ParameterName);
+                object valore = valori[i].Value;
+                string nuovo = valore == DBNull.Value ? "" : valore is DateTime ? ((DateTime)valore).ToString("s")
+                    : valore is bool ? ((bool)valore ? "1" : "0") : Convert.ToString(valore);
+                string vecchio = precedenti[colonne[i]];
+                bool uguali = valore is DateTime ? ValoriUguali(vecchio, nuovo)
+                    : string.Equals(vecchio, nuovo, StringComparison.Ordinal);
+                if (!uguali)
+                    Esegui(c,t,"INSERT dbo.StoricoModifiche(IDPersonale,Campo_Variato,Data_Modifica,Utente_Modificatore,Valore_Vecchio,Valore_Nuovo) VALUES(@id,@campo,@ora,@utente,@prima,@dopo)",
+                        P("@id",SqlDbType.Int,id),P("@campo",SqlDbType.VarChar,255,colonne[i]),P("@ora",SqlDbType.DateTime,ora),
+                        P("@utente",SqlDbType.VarChar,255,utente),P("@prima",SqlDbType.VarChar,255,vecchio),P("@dopo",SqlDbType.VarChar,255,nuovo));
+            }
+            string sql = esiste
+                ? "UPDATE dbo.[" + tabella + "] SET " + string.Join(",", assegnazioni) + ",Data_Versione_Profilo=@ora WHERE IDPersonale=@id"
+                : "INSERT dbo.Anagrafica_Sensibile(IDPersonale,Data_Versione_Profilo,[" + string.Join("],[", colonne) + "]) VALUES(@id,@ora," + string.Join(",", nomiParametri) + ")";
+            using (var q = new SqlCommand(sql, c, t))
+            {
+                q.Parameters.AddRange(valori);
+                q.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                q.Parameters.Add("@ora", SqlDbType.DateTime).Value = ora;
+                q.ExecuteNonQuery();
+            }
         }
 
         private static string DataStorico(DateTime? data) { return data.HasValue ? data.Value.ToString("s") : ""; }

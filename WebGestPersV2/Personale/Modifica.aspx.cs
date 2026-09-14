@@ -39,6 +39,29 @@ namespace WebGestPersV2.Personale
             Seleziona(EducationTitle, persona.IdTitoloStudio);
             Seleziona(TimeBand, persona.IdFasciaOraria);
             SelezionaTesto(ServiceStatus, persona.StatoServizio, "attivo");
+            Gender.SelectedValue = persona.Sesso == "Maschile" ? "M" : "F";
+            Notes.Text = persona.Note;
+            var comuni = repository.Comuni();
+            BirthDate.Text = FormattaData(persona.DataNascita);
+            Bind(BirthTown, comuni, "-- non indicato --");
+            Seleziona(BirthTown, persona.IdComuneNascita);
+            Bind(MaritalStatus, repository.StatiCivili(), "-- non indicato --");
+            Seleziona(MaritalStatus, persona.IdStatoCivile);
+            MobilePhone.Text = persona.Cellulare;
+            ResidenceAddress.Text = persona.IndirizzoResidenza;
+            Bind(ResidenceTown, comuni, "-- non indicato --");
+            Seleziona(ResidenceTown, persona.IdComuneResidenza);
+            ResidencePhone.Text = persona.TelefonoResidenza;
+            DomicileAddress.Text = persona.IndirizzoDomicilio;
+            Bind(DomicileTown, comuni, "-- non indicato --");
+            Seleziona(DomicileTown, persona.IdComuneDomicilio);
+            DomicilePhone.Text = persona.TelefonoDomicilio;
+            ServicePassport.Text = persona.PassaportoServizio;
+            ServicePassportDate.Text = FormattaData(persona.DataPassaportoServizio);
+            CmdValue.Text = persona.Cmd;
+            CmdDate.Text = FormattaData(persona.DataCmd);
+            AtModel.Text = persona.ModelloAt;
+            AtDate.Text = FormattaData(persona.DataAt);
             LastName.Text = persona.Cognome;
             FirstName.Text = persona.Nome;
             TaxCode.Text = persona.CodiceFiscale;
@@ -158,6 +181,24 @@ namespace WebGestPersV2.Personale
                 int titolo, fascia, forzaArmata, grado, posizione, categoriaMilitare, ruoloMilitare, specialitaMilitare;
                 var dati = new ModificaPersonaleRequest
                 {
+                    SessoMaschile = Gender.SelectedValue == "M",
+                    Note = Notes.Text,
+                    DataNascita = ParseData(BirthDate.Text, "data di nascita"),
+                    IdComuneNascita = IdSelezionato(BirthTown),
+                    IdStatoCivile = IdSelezionato(MaritalStatus),
+                    Cellulare = MobilePhone.Text.Trim(),
+                    IndirizzoResidenza = ResidenceAddress.Text.Trim(),
+                    IdComuneResidenza = IdSelezionato(ResidenceTown),
+                    TelefonoResidenza = ResidencePhone.Text.Trim(),
+                    IndirizzoDomicilio = DomicileAddress.Text.Trim(),
+                    IdComuneDomicilio = IdSelezionato(DomicileTown),
+                    TelefonoDomicilio = DomicilePhone.Text.Trim(),
+                    PassaportoServizio = ServicePassport.Text.Trim(),
+                    DataPassaportoServizio = ParseData(ServicePassportDate.Text, "data passaporto di servizio"),
+                    Cmd = CmdValue.Text.Trim(),
+                    DataCmd = ParseData(CmdDate.Text, "data cmd"),
+                    ModelloAt = AtModel.Text.Trim(),
+                    DataAt = ParseData(AtDate.Text, "data modello at"),
                     IdPersonale = Id,
                     Militare = persona.Militare,
                     Cognome = LastName.Text.Trim(), Nome = FirstName.Text.Trim(),
@@ -221,6 +262,12 @@ namespace WebGestPersV2.Personale
             if ((militare && livello != 150 && livello != 170 && livello != 200) ||
                 (!militare && livello != 160 && livello != 170 && livello != 200))
                 Response.Redirect("~/Account/AccessoNegato.aspx", true);
+        }
+
+        private static int? IdSelezionato(DropDownList elenco)
+        {
+            int id;
+            return int.TryParse(elenco.SelectedValue, out id) ? (int?)id : null;
         }
 
         private static DateTime? ParseData(string valore, string nomeCampo)

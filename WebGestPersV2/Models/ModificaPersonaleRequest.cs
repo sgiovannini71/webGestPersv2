@@ -4,6 +4,24 @@ namespace WebGestPersV2.Models
 {
     public sealed class ModificaPersonaleRequest
     {
+        public bool SessoMaschile { get; set; }
+        public string Note { get; set; }
+        public DateTime? DataNascita { get; set; }
+        public int? IdComuneNascita { get; set; }
+        public int? IdStatoCivile { get; set; }
+        public string Cellulare { get; set; }
+        public string IndirizzoResidenza { get; set; }
+        public int? IdComuneResidenza { get; set; }
+        public string TelefonoResidenza { get; set; }
+        public string IndirizzoDomicilio { get; set; }
+        public int? IdComuneDomicilio { get; set; }
+        public string TelefonoDomicilio { get; set; }
+        public string PassaportoServizio { get; set; }
+        public DateTime? DataPassaportoServizio { get; set; }
+        public string Cmd { get; set; }
+        public DateTime? DataCmd { get; set; }
+        public string ModelloAt { get; set; }
+        public DateTime? DataAt { get; set; }
         public int IdPersonale { get; set; }
         public string Cognome { get; set; }
         public string Nome { get; set; }

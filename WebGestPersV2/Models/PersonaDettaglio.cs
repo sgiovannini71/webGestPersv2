@@ -4,6 +4,10 @@ namespace WebGestPersV2.Models
 {
     public sealed class PersonaDettaglio
     {
+        public int? IdComuneNascita { get; set; }
+        public int? IdStatoCivile { get; set; }
+        public int? IdComuneResidenza { get; set; }
+        public int? IdComuneDomicilio { get; set; }
         public int IdPersonale { get; set; }
         public string Cognome { get; set; }
         public string Nome { get; set; }

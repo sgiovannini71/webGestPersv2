@@ -2,6 +2,8 @@ namespace WebGestPersV2.Personale
 {
     public partial class Modifica
     {
+        protected global::System.Web.UI.WebControls.TextBox Notes, BirthDate, MobilePhone, ResidenceAddress, ResidencePhone, DomicileAddress, DomicilePhone, ServicePassport, ServicePassportDate, CmdValue, CmdDate, AtModel, AtDate;
+        protected global::System.Web.UI.WebControls.DropDownList Gender, BirthTown, MaritalStatus, ResidenceTown, DomicileTown;
         protected global::System.Web.UI.WebControls.Label Message;
         protected global::System.Web.UI.WebControls.HyperLink TopBackLink;
         protected global::System.Web.UI.WebControls.Panel InactivePhotoPanel;

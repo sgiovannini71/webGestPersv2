@@ -12,6 +12,7 @@
   <label>Cognome*</label><asp:TextBox ID="LastName" runat="server" MaxLength="30" /><asp:RequiredFieldValidator runat="server" ControlToValidate="LastName" ErrorMessage="Cognome obbligatorio." ValidationGroup="edit" CssClass="field-error" />
   <label>Nome*</label><asp:TextBox ID="FirstName" runat="server" MaxLength="30" /><asp:RequiredFieldValidator runat="server" ControlToValidate="FirstName" ErrorMessage="Nome obbligatorio." ValidationGroup="edit" CssClass="field-error" />
   <label>Codice fiscale*</label><asp:TextBox ID="TaxCode" runat="server" MaxLength="16" /><asp:RequiredFieldValidator runat="server" ControlToValidate="TaxCode" ErrorMessage="Codice fiscale obbligatorio." ValidationGroup="edit" CssClass="field-error" />
+  <label>Sesso</label><asp:DropDownList ID="Gender" runat="server"><asp:ListItem Value="M">Maschile</asp:ListItem><asp:ListItem Value="F">Femminile</asp:ListItem></asp:DropDownList><span></span>
   <label>Data assegnazione</label><asp:TextBox ID="AssignmentDate" runat="server" TextMode="Date" /><span></span>
   <label>Ente provenienza</label><asp:TextBox ID="SourceOrganization" runat="server" MaxLength="50" /><span></span>
   <label>Telefono ufficio</label><asp:TextBox ID="OfficePhone" runat="server" MaxLength="15" /><span></span>
@@ -54,5 +55,26 @@
   <label>Fascia dirigenziale</label><asp:DropDownList ID="ManagementBand" runat="server"><asp:ListItem Value="n/a">n/a</asp:ListItem><asp:ListItem Value="1^">1^</asp:ListItem><asp:ListItem Value="2^">2^</asp:ListItem></asp:DropDownList><span></span>
   <label>Fascia retributiva dirigenti</label><asp:DropDownList ID="PayBand" runat="server"><asp:ListItem Value="n/a">n/a</asp:ListItem><asp:ListItem Value="1^">1^</asp:ListItem><asp:ListItem Value="2^">2^</asp:ListItem><asp:ListItem Value="3^">3^</asp:ListItem><asp:ListItem Value="4^">4^</asp:ListItem><asp:ListItem Value="5^">5^</asp:ListItem><asp:ListItem Value="6^">6^</asp:ListItem><asp:ListItem Value="7^">7^</asp:ListItem></asp:DropDownList><span></span>
  </div></asp:Panel>
+ <section class="card form-card detail-section"><h2>Anagrafica e recapiti</h2><div class="edit-grid">
+  <label>Data di nascita</label><asp:TextBox ID="BirthDate" runat="server" TextMode="Date" /><span></span>
+  <label>Comune di nascita</label><asp:DropDownList ID="BirthTown" runat="server" /><span></span>
+  <label>Stato civile</label><asp:DropDownList ID="MaritalStatus" runat="server" /><span></span>
+  <label>Cellulare</label><asp:TextBox ID="MobilePhone" runat="server" MaxLength="20" /><span></span>
+  <label>Indirizzo di residenza</label><asp:TextBox ID="ResidenceAddress" runat="server" MaxLength="50" /><span></span>
+  <label>Comune di residenza</label><asp:DropDownList ID="ResidenceTown" runat="server" /><span></span>
+  <label>Telefono di residenza</label><asp:TextBox ID="ResidencePhone" runat="server" MaxLength="20" /><span></span>
+  <label>Indirizzo di domicilio</label><asp:TextBox ID="DomicileAddress" runat="server" MaxLength="50" /><span></span>
+  <label>Comune di domicilio</label><asp:DropDownList ID="DomicileTown" runat="server" /><span></span>
+  <label>Telefono di domicilio</label><asp:TextBox ID="DomicilePhone" runat="server" MaxLength="20" /><span></span>
+ </div></section>
+ <section class="card form-card detail-section"><h2>Documenti di servizio</h2><div class="edit-grid">
+  <label>Passaporto di servizio</label><asp:TextBox ID="ServicePassport" runat="server" MaxLength="20" /><span></span>
+  <label>Data passaporto di servizio</label><asp:TextBox ID="ServicePassportDate" runat="server" TextMode="Date" /><span></span>
+  <label>CMD</label><asp:TextBox ID="CmdValue" runat="server" MaxLength="20" /><span></span>
+  <label>Data CMD</label><asp:TextBox ID="CmdDate" runat="server" TextMode="Date" /><span></span>
+  <label>Modello AT</label><asp:TextBox ID="AtModel" runat="server" MaxLength="20" /><span></span>
+  <label>Data modello AT</label><asp:TextBox ID="AtDate" runat="server" TextMode="Date" /><span></span>
+ </div></section>
+ <section class="card form-card detail-section"><h2>Note</h2><asp:TextBox ID="Notes" runat="server" TextMode="MultiLine" Rows="5" Width="100%" /></section>
  <div class="form-actions"><asp:Button ID="SaveButton" runat="server" Text="Salva modifiche" CssClass="button" ValidationGroup="edit" OnClick="SaveButton_Click" /><asp:HyperLink ID="AssignmentsLink" runat="server" CssClass="button secondary">Gestisci incarichi</asp:HyperLink><asp:HyperLink ID="CancelLink" runat="server" CssClass="button secondary">Annulla</asp:HyperLink></div>
 </asp:Content>

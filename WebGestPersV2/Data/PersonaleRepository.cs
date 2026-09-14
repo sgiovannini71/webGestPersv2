@@ -183,7 +183,8 @@ namespace WebGestPersV2.Data
                                         ep.ImgPath, ep.id_Tit_Studio, ep.IDFasciaOraria,
                                         pm.ID_Arma, pm.ID_Grado, pc.ID_Asl, pc.ID_TitoloAss,
                                         pc.ID_TitoloAtt, pc.ID_sottoarea, pm.id_posizione,
-                                        pm.ID_Categoria, pm.ID_Ruolo, pm.[ID_Specialità]
+                                        pm.ID_Categoria, pm.ID_Ruolo, pm.[ID_Specialità],
+                                        ans.ID_Comune_Nascita, ans.ID_StatoCivile, ans.ID_comune_Residenza, ans.ID_comune_Domicilio
                                  FROM dbo.ElencoPersonale AS ep
                                  LEFT JOIN dbo.Profilo_militare AS pm ON ep.IDPersonale = pm.IDPersonale AND ep.Militare = 1
                                  LEFT JOIN dbo.Gradi AS g ON pm.ID_Grado = g.ID_Grado
@@ -243,7 +244,11 @@ namespace WebGestPersV2.Data
                         IdTitoloAssunzione = InteroNullable(reader, 75), IdTitoloAttuale = InteroNullable(reader, 76),
                         IdSottoarea = InteroNullable(reader, 77), IdPosizioneMilitare = InteroNullable(reader, 78),
                         IdCategoriaMilitare = InteroNullable(reader, 79), IdRuoloMilitare = InteroNullable(reader, 80),
-                        IdSpecialitaMilitare = InteroNullable(reader, 81)
+                        IdSpecialitaMilitare = InteroNullable(reader, 81),
+                        IdComuneNascita = InteroNullable(reader, 82),
+                        IdStatoCivile = InteroNullable(reader, 83),
+                        IdComuneResidenza = InteroNullable(reader, 84),
+                        IdComuneDomicilio = InteroNullable(reader, 85)
                     };
                 }
             }
