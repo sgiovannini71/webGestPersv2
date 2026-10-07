@@ -62,7 +62,9 @@ ORDER BY p.Cognome,p.Nome,c.tipo";
             denominazione=NormalizzaEmail(denominazione);tipo=DeterminaTipoCasella(denominazione,tipo);VerificaPersona(idPersonale);
             using(var connection=new SqlConnection(Db.ConnectionString)){connection.Open();using(var transaction=connection.BeginTransaction())try
             { VerificaDuplicato(connection,transaction,idPersonale,denominazione,tipo,null);
-              IList<CasellaPostaleItem> assegnazioni=CercaAssegnazioni(connection,transaction,denominazione,idPersonale);
+              IList<CasellaPostaleItem> assegnazioni=tipo=="condivisa"
+                  ? new List<CasellaPostaleItem>()
+                  : CercaAssegnazioni(connection,transaction,denominazione,idPersonale);
               if(assegnazioni.Count>0&&!trasferisci)throw new InvalidOperationException("La casella è già assegnata. Utilizzare Verifica disponibilità e confermare il trasferimento.");
               if(assegnazioni.Count>0)RimuoviAssegnazioniPrecedenti(connection,transaction,assegnazioni,denominazione,utente);
               int id;using(var command=new SqlCommand("INSERT dbo.Cassette_Postali(IDPersonale,Denominazione,tipo) VALUES(@Persona,@Email,@Tipo);SELECT CAST(SCOPE_IDENTITY() AS int);",connection,transaction)){Parametri(command,idPersonale,denominazione,tipo);id=(int)command.ExecuteScalar();}
@@ -95,6 +97,7 @@ ORDER BY p.Cognome,p.Nome,c.tipo";
         public string DeterminaTipoCasella(string denominazione,string tipoSelezionato)
         {
             string email=NormalizzaEmail(denominazione);string dominio=new MailAddress(email).Host.Trim().TrimEnd('.').ToLowerInvariant();
+            if(string.Equals((tipoSelezionato??"").Trim(),"condivisa",StringComparison.OrdinalIgnoreCase))return "condivisa";
             if(string.Equals(dominio,AppConfig.DominioPostaFunzionale,StringComparison.OrdinalIgnoreCase))return "funzionale";
             if(string.Equals(dominio,AppConfig.DominioPostaPersonale,StringComparison.OrdinalIgnoreCase))return "personale";
             return NormalizzaTipo(tipoSelezionato);
