@@ -1,0 +1,737 @@
+﻿SET XACT_ABORT ON;
+
+------------------------------------------------------------
+-- AGGIORNAMENTO TABELLA dbo.Liv1Uff
+------------------------------------------------------------
+-- Nuovi valori:
+-- ID_Uff1   = 12
+-- SgUff1   = 'SSD'
+-- DescUff1 = 'Servizio Supporto del Direttore'
+-- livello  = 0
+------------------------------------------------------------
+
+IF EXISTS (
+    SELECT 1
+    FROM dbo.Liv1Uff
+    WHERE ID_Uff1 = 12
+)
+BEGIN
+    UPDATE dbo.Liv1Uff
+       SET SgUff1      = 'SSD',
+           DescUff1    = 'Servizio Supporto del Direttore',
+           livello     = 0,
+           Attivo      = 1
+     WHERE ID_Uff1 = 12;
+END
+ELSE
+BEGIN
+    INSERT INTO dbo.Liv1Uff
+    (
+        ID_Uff1,
+        SgUff1,
+        DescUff1,
+        livello,
+        competenze,
+        Attivo
+    )
+    VALUES
+    (
+        12,
+        'SSD',
+        'Servizio Supporto del Direttore',
+        0,
+        NULL,
+        1
+    );
+END;
+
+SELECT *
+FROM dbo.Liv1Uff
+WHERE ID_Uff1 = 12;
+
+
+------------------------------------------------------------
+-- ELIMINAZIONE VOCI DA dbo.Liv3Uff
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+DELETE FROM dbo.Liv3Uff
+WHERE ID_Uff3 IN (176, 177, 191, 190);
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff3 IN (176, 177, 191, 190);
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- AGGIORNAMENTO dbo.Liv2Uff - SSD
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+-- Upsert ID_Uff2 = 117. ID_Uff2 e' identity, quindi serve IDENTITY_INSERT
+-- solo quando il record non esiste.
+IF EXISTS (
+    SELECT 1
+    FROM dbo.Liv2Uff
+    WHERE ID_Uff1 = 12
+      AND ID_Uff2 = 117
+)
+BEGIN
+    UPDATE dbo.Liv2Uff
+       SET SgUff2 = 'S6',
+           DescUff2 = 'Sezione per la tenuta del Protocollo informatico, della Gestione dei flussi documentali e degli Archivi',
+           livello = 6,
+           competenze = NULL
+     WHERE ID_Uff1 = 12
+       AND ID_Uff2 = 117;
+END
+ELSE
+BEGIN
+    SET IDENTITY_INSERT dbo.Liv2Uff ON;
+
+    INSERT INTO dbo.Liv2Uff
+    (
+        ID_Uff2,
+        SgUff2,
+        DescUff2,
+        livello,
+        ID_Uff1,
+        competenze
+    )
+    VALUES
+    (
+        117,
+        'S6',
+        'Sezione per la tenuta del Protocollo informatico, della Gestione dei flussi documentali e degli Archivi',
+        6,
+        12,
+        NULL
+    );
+
+    SET IDENTITY_INSERT dbo.Liv2Uff OFF;
+END;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff1 = 12
+ORDER BY livello, SgUff2;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- AZIONI SU dbo.Liv2Uff - SSD
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+-- ID_Uff2 = 109 potrebbe essere stato eliminato in precedenti esecuzioni:
+-- lo aggiorna se esiste, altrimenti lo reinserisce con IDENTITY_INSERT.
+IF EXISTS (
+    SELECT 1
+    FROM dbo.Liv2Uff
+    WHERE ID_Uff2 = 109
+)
+BEGIN
+    UPDATE dbo.Liv2Uff
+       SET SgUff2 = 'S7',
+           DescUff2 = 'Divulgazione materiale divulgativo classificato (SSI)',
+           livello = 7,
+           ID_Uff1 = 12,
+           competenze = NULL
+     WHERE ID_Uff2 = 109;
+END
+ELSE
+BEGIN
+    SET IDENTITY_INSERT dbo.Liv2Uff ON;
+
+    INSERT INTO dbo.Liv2Uff
+    (
+        ID_Uff2,
+        SgUff2,
+        DescUff2,
+        livello,
+        ID_Uff1,
+        competenze
+    )
+    VALUES
+    (
+        109,
+        'S7',
+        'Divulgazione materiale divulgativo classificato (SSI)',
+        7,
+        12,
+        NULL
+    );
+
+    SET IDENTITY_INSERT dbo.Liv2Uff OFF;
+END;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'S1',
+    DescUff2 = 'Affari del Personale Militare',
+    livello = 1,
+    ID_Uff1 = 12,
+    competenze = NULL
+WHERE ID_Uff2 = 51;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'S2',
+    DescUff2 = 'Affari del Personale Civile',
+    livello = 2,
+    ID_Uff1 = 12,
+    competenze = NULL
+WHERE ID_Uff2 = 52;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'S3',
+    DescUff2 = 'Affari Generali ed Economato',
+    livello = 3,
+    ID_Uff1 = 12,
+    competenze = NULL
+WHERE ID_Uff2 = 53;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'S4',
+    DescUff2 = 'Sicurezza NATO/UE',
+    livello = 4,
+    ID_Uff1 = 12,
+    competenze = NULL
+WHERE ID_Uff2 = 54;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'S5',
+    DescUff2 = 'Coordinamento',
+    livello = 5,
+    ID_Uff1 = 12,
+    competenze = NULL
+WHERE ID_Uff2 = 116;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'S6',
+    DescUff2 = 'Sezione per la tenuta del Protocollo informatico, della Gestione dei flussi documentali e degli Archivi',
+    livello = 6,
+    ID_Uff1 = 12,
+    competenze = NULL
+WHERE ID_Uff2 = 117;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff1 = 12
+ORDER BY livello, ID_Uff2;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- AGGIORNA dbo.Liv3Uff PER SPMP
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+UPDATE dbo.Liv3Uff
+SET SgUff3 = 'S1',
+    DescUff3 = 'Programmazione finanziaria'
+WHERE ID_Uff3 = 166;
+
+UPDATE dbo.Liv3Uff
+SET SgUff3 = 'S2',
+    DescUff3 = 'Monitoraggio Programmi'
+WHERE ID_Uff3 = 167;
+
+UPDATE dbo.Liv3Uff
+SET SgUff3 = 'S3',
+    DescUff3 = 'Programmi di Ricerca Tecnologica'
+WHERE ID_Uff3 = 165;
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff3 IN (165, 166, 167)
+ORDER BY livello, ID_Uff3;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- RIMUOVE SEGRETERIA VDA
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+DELETE FROM dbo.Liv3Uff
+WHERE ID_Uff1 = 13
+  AND ID_Uff2 = 56;
+
+DELETE FROM dbo.Liv2Uff
+WHERE ID_Uff1 = 13
+  AND ID_Uff2 = 56;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff1 = 13
+  AND ID_Uff2 = 56;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- RIMUOVE SEZIONI VDA dbo.Liv3Uff
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+DELETE FROM dbo.Liv3Uff
+WHERE ID_Uff3 IN (179, 180);
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff3 IN (179, 180);
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- RIMUOVE SERVIZIO VDA SCC
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+DELETE FROM dbo.Liv3Uff
+WHERE ID_Uff2 = 72;
+
+DELETE FROM dbo.Liv2Uff
+WHERE ID_Uff2 = 72;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff2 = 72;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- AGGIORNAMENTO VDA D10, D11 E SEZIONI
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'D10',
+    DescUff2 = '10 Div - Contratti Nazionali ed Esteri',
+    livello = 6,
+    competenze = NULL
+WHERE ID_Uff2 = 70;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'D11',
+    DescUff2 = '11 Div - Bilancio e Liquidazione',
+    livello = 7,
+    competenze = NULL
+WHERE ID_Uff2 = 71;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Approvvigionamenti nazionali mediante Procedura Negoziata' WHERE ID_Uff3 = 102;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Approvvigionamenti nazionali mediante Procedura Concorsuale, Convenzioni CONSIP' WHERE ID_Uff3 = 103;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Gestione documentazione contrattuale, Acquisti in Economia e Contratti attivi' WHERE ID_Uff3 = 104;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Approvvigionamenti presso ditte estere' WHERE ID_Uff3 = 105;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S5', DescUff3 = 'Approvvigionamenti presso Governi ed Agenzie' WHERE ID_Uff3 = 106;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S6', DescUff3 = 'Procedure Doganali' WHERE ID_Uff3 = 107;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Bilancio e Monitorizzazione di Cassa' WHERE ID_Uff3 = 109;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Accreditamenti, Revisioni Prezzo e Conguagli Valuta' WHERE ID_Uff3 = 110;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Liquidazione nazionale e gestione Perenti' WHERE ID_Uff3 = 111;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Pagamenti esteri' WHERE ID_Uff3 = 168;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff2 IN (70, 71)
+ORDER BY ID_Uff2;
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff3 IN (102,103,104,105,106,107,109,110,111,168)
+ORDER BY ID_Uff3;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- RIMOZIONE VDT SSI
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+DELETE FROM dbo.Liv3Uff
+WHERE ID_Uff2 = 79;
+
+DELETE FROM dbo.Liv2Uff
+WHERE ID_Uff2 = 79;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff2 = 79;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- MODIFICA VT1
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'SAC',
+    DescUff2 = 'SERVIZIO Analisi Costi',
+    livello = 2,
+    ID_Uff1 = 16,
+    competenze = NULL
+WHERE ID_Uff2 = 118;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'UCNAI',
+    DescUff2 = 'Ufficio Certificazione E Immatricolazione Aereomobili',
+    livello = 3,
+    ID_Uff1 = 16,
+    competenze = NULL
+WHERE ID_Uff2 = 75;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Costi Orari', ID_Uff1 = 16, ID_Uff2 = 118 WHERE ID_Uff3 = 192;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Affari Generali', ID_Uff1 = 16, ID_Uff2 = 118 WHERE ID_Uff3 = 193;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 16, ID_Uff2 = 75 WHERE ID_Uff3 = 196;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Aeromobili Ala Fissa', ID_Uff1 = 16, ID_Uff2 = 75 WHERE ID_Uff3 = 112;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Aeromobili Difesa Aerea e CTOL/STOVL', ID_Uff1 = 16, ID_Uff2 = 75 WHERE ID_Uff3 = 113;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Aeromobili Ala Rotante', ID_Uff1 = 16, ID_Uff2 = 75 WHERE ID_Uff3 = 114;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Aeromobili APR', ID_Uff1 = 16, ID_Uff2 = 75 WHERE ID_Uff3 = 115;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S5', DescUff3 = 'Aeromobili 6^ Generazione', ID_Uff1 = 16, ID_Uff2 = 75 WHERE ID_Uff3 = 116;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S6', DescUff3 = 'NGIFF, Motori, Armamento e Apparati Avionici', ID_Uff1 = 16, ID_Uff2 = 75 WHERE ID_Uff3 = 184;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff1 = 16
+  AND ID_Uff2 IN (118, 75)
+ORDER BY livello, ID_Uff2;
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff1 = 16
+  AND ID_Uff2 IN (118, 75)
+ORDER BY ID_Uff2, ID_Uff3;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- RIMOZIONE VDT1U7S CYBER SECURITY
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+DELETE FROM dbo.Liv3Uff
+WHERE ID_Uff1 = 16
+  AND ID_Uff2 = 75
+  AND ID_Uff3 = 185;
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff3 = 185;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- AGGIORNA VDT U2
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+UPDATE dbo.Liv2Uff
+SET SgUff2 = 'UNTSQ',
+    DescUff2 = 'Ufficio Normativa Tecnica Standardizzazione Qualità',
+    livello = 4,
+    ID_Uff1 = 16,
+    competenze = NULL
+WHERE ID_Uff2 = 76;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 16, ID_Uff2 = 76 WHERE ID_Uff3 = 197;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Normativa Generale', ID_Uff1 = 16, ID_Uff2 = 76 WHERE ID_Uff3 = 117;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Certificazione e Organizzazione', ID_Uff1 = 16, ID_Uff2 = 76 WHERE ID_Uff3 = 118;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Riconoscimenti Internazionali e Standardizzazione', ID_Uff1 = 16, ID_Uff2 = 76 WHERE ID_Uff3 = 119;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Formazione e Addestramento', ID_Uff1 = 16, ID_Uff2 = 76 WHERE ID_Uff3 = 120;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S5', DescUff3 = 'Assicurazione Qualità Governativa', ID_Uff1 = 16, ID_Uff2 = 76 WHERE ID_Uff3 = 186;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff2 = 76;
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff3 IN (197, 117, 118, 119, 120, 186)
+ORDER BY ID_Uff2, ID_Uff3;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- AGGIORNAMENTO 1R
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+UPDATE dbo.Liv2Uff SET SgUff2 = 'Supporto', DescUff2 = 'Personale a contratto - supporto ditta', livello = 0, ID_Uff1 = 17, competenze = NULL WHERE ID_Uff2 = 122;
+UPDATE dbo.Liv2Uff SET SgUff2 = 'D1', DescUff2 = '1 Div - Velivoli da Combattimento e Difesa Aerea', livello = 1, ID_Uff1 = 17, competenze = NULL WHERE ID_Uff2 = 83;
+UPDATE dbo.Liv2Uff SET SgUff2 = 'D2', DescUff2 = '2 Div - Velivoli STOVL-CTOL e addestramento', livello = 3, ID_Uff1 = 17, competenze = NULL WHERE ID_Uff2 = 85;
+UPDATE dbo.Liv2Uff SET SgUff2 = 'D3', DescUff2 = '3 Div - Velivoli da Trasporto Tattico, Strategico e Speciali', livello = 4, ID_Uff1 = 17, competenze = NULL WHERE ID_Uff2 = 86;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 17, ID_Uff2 = 83 WHERE ID_Uff3 = 198;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Velivoli da Difesa Aerea', ID_Uff1 = 17, ID_Uff2 = 83 WHERE ID_Uff3 = 126;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Velivoli da Comabattimento', ID_Uff1 = 17, ID_Uff2 = 83 WHERE ID_Uff3 = 127;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Produzione e Supporto Logistico Iniziale', ID_Uff1 = 17, ID_Uff2 = 83 WHERE ID_Uff3 = 128;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Normativa Tecnica', ID_Uff1 = 17, ID_Uff2 = 83 WHERE ID_Uff3 = 129;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S5', DescUff3 = 'Velivoli 6^ generazione', ID_Uff1 = 17, ID_Uff2 = 83 WHERE ID_Uff3 = 194;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 17, ID_Uff2 = 85 WHERE ID_Uff3 = 199;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Velivoli di Proiezione STOVL/CTOL - Fattori Contrattuali', ID_Uff1 = 17, ID_Uff2 = 85 WHERE ID_Uff3 = 130;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Velivoli di Proiezione STOVL/CTOL - Fattori Tecnico Programmatici', ID_Uff1 = 17, ID_Uff2 = 85 WHERE ID_Uff3 = 131;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Velivoli da Addestramento', ID_Uff1 = 17, ID_Uff2 = 85 WHERE ID_Uff3 = 132;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Normativa Tecnica', ID_Uff1 = 17, ID_Uff2 = 85 WHERE ID_Uff3 = 133;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 17, ID_Uff2 = 86 WHERE ID_Uff3 = 200;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Velivoli da Trasporto Tattico e Strategico', ID_Uff1 = 17, ID_Uff2 = 86 WHERE ID_Uff3 = 134;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Velivoli da Trasporto Passeggeri e Collegamento', ID_Uff1 = 17, ID_Uff2 = 86 WHERE ID_Uff3 = 135;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Velivoli Speciali', ID_Uff1 = 17, ID_Uff2 = 86 WHERE ID_Uff3 = 136;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Velivoli Aerorifornitori e Pattugliamento', ID_Uff1 = 17, ID_Uff2 = 86 WHERE ID_Uff3 = 137;
+
+SELECT * FROM dbo.Liv2Uff WHERE ID_Uff1 = 17 AND ID_Uff2 IN (122,83,85,86);
+SELECT * FROM dbo.Liv3Uff WHERE ID_Uff1 = 17 AND ID_Uff2 IN (83,85,86);
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- AGGIORNO R2 - RIMUOVO SEGRETERIA
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+DELETE FROM dbo.Liv3Uff
+WHERE ID_Uff1 = 18
+  AND ID_Uff2 = 87;
+
+DELETE FROM dbo.Liv2Uff
+WHERE ID_Uff1 = 18
+  AND ID_Uff2 = 87;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff1 = 18
+  AND ID_Uff2 = 87;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- AGGIORNO REPARTO R2
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+UPDATE dbo.Liv2Uff SET SgUff2 = 'Supporto', DescUff2 = 'Personale a contratto - supporto ditta', livello = 0, ID_Uff1 = 18, competenze = NULL WHERE ID_Uff2 = 123;
+UPDATE dbo.Liv2Uff SET SgUff2 = 'D4', DescUff2 = '4 Div - A.P.R. Aerobersagli e Mezzi Spaziali', livello = 1, ID_Uff1 = 18, competenze = NULL WHERE ID_Uff2 = 88;
+UPDATE dbo.Liv2Uff SET SgUff2 = 'D5', DescUff2 = '5 Div - Aeromobili ad Ala Rotante multiruolo e imbarcati', livello = 2, ID_Uff1 = 18, competenze = NULL WHERE ID_Uff2 = 89;
+UPDATE dbo.Liv2Uff SET SgUff2 = 'D6', DescUff2 = '6 Div - Aeromobili ad Ala Rotante da trasporto, tattici e speciali', livello = 3, ID_Uff1 = 18, competenze = NULL WHERE ID_Uff2 = 90;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 18, ID_Uff2 = 88 WHERE ID_Uff3 = 201;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'A.P.R. Strategici', ID_Uff1 = 18, ID_Uff2 = 88 WHERE ID_Uff3 = 138;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'A.P.R. Mini e Micro', ID_Uff1 = 18, ID_Uff2 = 88 WHERE ID_Uff3 = 139;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'A.P.R. Leggeri e Tattici, Mezzi Spaziali e Aerobersagli', ID_Uff1 = 18, ID_Uff2 = 88 WHERE ID_Uff3 = 140;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Normativa Tecnica', ID_Uff1 = 18, ID_Uff2 = 88 WHERE ID_Uff3 = 141;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 18, ID_Uff2 = 89 WHERE ID_Uff3 = 202;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Aeromobili Imbarcati', ID_Uff1 = 18, ID_Uff2 = 89 WHERE ID_Uff3 = 142;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Elicotteri Multiruolo Terrestri', ID_Uff1 = 18, ID_Uff2 = 89 WHERE ID_Uff3 = 143;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Elicotteri Multiruolo Navali', ID_Uff1 = 18, ID_Uff2 = 89 WHERE ID_Uff3 = 144;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Elicotteri Multiruolo Interforze', ID_Uff1 = 18, ID_Uff2 = 89 WHERE ID_Uff3 = 145;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S5', DescUff3 = 'Normativa Tecnica', ID_Uff1 = 18, ID_Uff2 = 89 WHERE ID_Uff3 = 146;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 18, ID_Uff2 = 90 WHERE ID_Uff3 = 203;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Elicotteri Speciali', ID_Uff1 = 18, ID_Uff2 = 90 WHERE ID_Uff3 = 147;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Elicotteri da Trasporto e Tattici', ID_Uff1 = 18, ID_Uff2 = 90 WHERE ID_Uff3 = 148;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Elicotteri da Addestramento e Collegamento', ID_Uff1 = 18, ID_Uff2 = 90 WHERE ID_Uff3 = 150;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Normativa Tecnica', ID_Uff1 = 18, ID_Uff2 = 90 WHERE ID_Uff3 = 151;
+
+SELECT * FROM dbo.Liv2Uff WHERE ID_Uff1 = 18 AND ID_Uff2 IN (123,88,89,90);
+SELECT * FROM dbo.Liv3Uff WHERE ID_Uff1 = 18 AND ID_Uff2 IN (88,89,90);
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- ELIMINO SEGRETERIA 3R E AGGIORNO SEZIONE 188
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+UPDATE dbo.Liv3Uff
+SET SgUff3 = 'S5',
+    DescUff3 = 'Equipaggiamenti di Sicurezza e Salvataggio',
+    ID_Uff1 = 19,
+    ID_Uff2 = 92
+WHERE ID_Uff3 = 188;
+
+DELETE FROM dbo.Liv3Uff
+WHERE ID_Uff1 = 19
+  AND ID_Uff2 = 91;
+
+DELETE FROM dbo.Liv2Uff
+WHERE ID_Uff1 = 19
+  AND ID_Uff2 = 91;
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff3 = 188;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff1 = 19
+  AND ID_Uff2 = 91;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- AGGIUNGI SEZIONE S4 MATERIALI PERICOLOSI
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM dbo.Liv3Uff
+    WHERE ID_Uff1 = 19
+      AND ID_Uff2 = 94
+      AND SgUff3 = 'S4'
+      AND DescUff3 = 'Materiali Pericolosi Gestione Oleodotti'
+)
+BEGIN
+    INSERT INTO dbo.Liv3Uff
+    (
+        SgUff3,
+        DescUff3,
+        livello,
+        ID_Uff1,
+        ID_Uff2,
+        competenze
+    )
+    VALUES
+    (
+        'S4',
+        'Materiali Pericolosi Gestione Oleodotti',
+        4,
+        19,
+        94,
+        NULL
+    );
+END;
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff1 = 19
+  AND ID_Uff2 = 94
+  AND SgUff3 = 'S4'
+  AND DescUff3 = 'Materiali Pericolosi Gestione Oleodotti';
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- AGGIORNAMENTO 7D, 8D, 9D
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+UPDATE dbo.Liv2Uff SET SgUff2 = 'Supporto', DescUff2 = 'Personale a contratto - supporto ditta', livello = 0, ID_Uff1 = 19, competenze = NULL WHERE ID_Uff2 = 124;
+UPDATE dbo.Liv2Uff SET SgUff2 = 'D9', DescUff2 = '9 Div - Carbolubrificanti e Materiali Pericolosi', livello = 1, ID_Uff1 = 19, competenze = NULL WHERE ID_Uff2 = 94;
+UPDATE dbo.Liv2Uff SET SgUff2 = 'D7', DescUff2 = '7 Div - Avionica e Armamento di bordo', livello = 2, ID_Uff1 = 19, competenze = NULL WHERE ID_Uff2 = 92;
+UPDATE dbo.Liv2Uff SET SgUff2 = 'D8', DescUff2 = '8 Div - Sistemi di Propulsione di Salvataggio ed Equipaggiamenti di Supporto per Aeromobili', livello = 4, ID_Uff1 = 19, competenze = NULL WHERE ID_Uff2 = 93;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 19, ID_Uff2 = 94 WHERE ID_Uff3 = 206;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Consip, Carbolubrificanti e Lubrificanti Autotrazione e Navale', ID_Uff1 = 19, ID_Uff2 = 94 WHERE ID_Uff3 = 161;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Carbolubrificanti e Lubrificanti Avio', ID_Uff1 = 19, ID_Uff2 = 94 WHERE ID_Uff3 = 162;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Gestione Oleodotti', ID_Uff1 = 19, ID_Uff2 = 94 WHERE ID_Uff3 = 183;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 19, ID_Uff2 = 92 WHERE ID_Uff3 = 204;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Sistemi missilistici A/A e A/S', ID_Uff1 = 19, ID_Uff2 = 92 WHERE ID_Uff3 = 152;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Armamento di Caduta, di Lancio, di Bordo e di Autoprotezione', ID_Uff1 = 19, ID_Uff2 = 92 WHERE ID_Uff3 = 153;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Avionica generale, Radar, Sistemi di navigazione e comunicazione', ID_Uff1 = 19, ID_Uff2 = 92 WHERE ID_Uff3 = 154;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Sistemi di auto-protezione, ricognizione, guida all''armamento ed elettroottici', ID_Uff1 = 19, ID_Uff2 = 92 WHERE ID_Uff3 = 155;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S5', DescUff3 = 'Sistemi di Simulazione, Pianificazione e SW di Bordo', ID_Uff1 = 19, ID_Uff2 = 92 WHERE ID_Uff3 = 156;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S5', DescUff3 = 'Equipaggiamenti di Sicurezza e Salvataggio', ID_Uff1 = 19, ID_Uff2 = 92 WHERE ID_Uff3 = 188;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S6', DescUff3 = 'Programmi di Ricerca e Sviluppo Tecnologico per Armamento di Bordo', ID_Uff1 = 19, ID_Uff2 = 92 WHERE ID_Uff3 = 189;
+
+UPDATE dbo.Liv3Uff SET SgUff3 = 'Supporto', DescUff3 = 'Personale ditta', ID_Uff1 = 19, ID_Uff2 = 93 WHERE ID_Uff3 = 205;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S1', DescUff3 = 'Sistemi propulsivi del tipo Turbogetto per Aeromobili ad ala fissa', ID_Uff1 = 19, ID_Uff2 = 93 WHERE ID_Uff3 = 157;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S2', DescUff3 = 'Sistemi propulsivi per elicotteri', ID_Uff1 = 19, ID_Uff2 = 93 WHERE ID_Uff3 = 159;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S3', DescUff3 = 'Sistemi propulsivi del tipo Motoelica/Turboelica per Aeromobili ad ala fissa e RPV', ID_Uff1 = 19, ID_Uff2 = 93 WHERE ID_Uff3 = 160;
+UPDATE dbo.Liv3Uff SET SgUff3 = 'S4', DescUff3 = 'Normativa Tecnica', ID_Uff1 = 19, ID_Uff2 = 93 WHERE ID_Uff3 = 174;
+
+SELECT *
+FROM dbo.Liv2Uff
+WHERE ID_Uff1 = 19
+  AND ID_Uff2 IN (124, 94, 92, 93)
+ORDER BY livello, ID_Uff2;
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff1 = 19
+  AND ID_Uff2 IN (94, 92, 93)
+ORDER BY ID_Uff2, ID_Uff3;
+
+COMMIT TRAN;
+
+
+------------------------------------------------------------
+-- RECUPERO ID_Uff3 = 119 SE MANCANTE
+------------------------------------------------------------
+
+BEGIN TRAN;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM dbo.Liv3Uff
+    WHERE ID_Uff3 = 119
+)
+BEGIN
+    SET IDENTITY_INSERT dbo.Liv3Uff ON;
+
+    INSERT INTO dbo.Liv3Uff
+    (
+        ID_Uff3,
+        ID_Uff2,
+        SgUff3,
+        DescUff3,
+        livello,
+        ID_Uff1,
+        competenze
+    )
+    VALUES
+    (
+        119,
+        76,
+        'S3',
+        'Riconoscimenti Internazionali e Standardizzazione',
+        7,
+        16,
+        NULL
+    );
+
+    SET IDENTITY_INSERT dbo.Liv3Uff OFF;
+END;
+
+SELECT *
+FROM dbo.Liv3Uff
+WHERE ID_Uff3 = 119;
+
+COMMIT TRAN;

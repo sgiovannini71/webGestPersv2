@@ -1,0 +1,98 @@
+﻿23;qqq1;wwww;0;de;S;NULL;NULL;NULL;NULL;NULL;NULL;NULL;NULL;NULL;NULL
+21;SPDIR;SEGRETERIA PARTICOLARE DEL DIRETTORE;0;NULL;S;NULL;NULL;NULL;NULL;NULL;NULL;NULL;NULL;NULL;NULL
+12;U. D.1;UFFICIO DEL DIRETTORE1;0;NULL;S;109;Segr;SEGRETERIA - Ufficio del Direttore;0;NULL;NULL;NULL;NULL;NULL;NULL
+12;U. D.1;UFFICIO DEL DIRETTORE1;0;NULL;S;51;U1;1^ SEZIONE - Affari del Personale Militare;1;NULL;169;NDC;Nucleo Documentazione Caratteristica e Matricolare;1;NULL
+12;U. D.1;UFFICIO DEL DIRETTORE1;0;NULL;S;51;U1;1^ SEZIONE - Affari del Personale Militare;1;NULL;170;NIPM;Nucleo Impiego Personale Militare;1;NULL
+12;U. D.1;UFFICIO DEL DIRETTORE1;0;NULL;S;52;U2;2^ SEZIONE - Affari del Personale Civile;2;NULL;NULL;NULL;NULL;NULL;NULL
+12;U. D.1;UFFICIO DEL DIRETTORE1;0;NULL;S;53;U3ss;3^ SEZIONE - Affari Generali ed Economatos;3;NULL;NULL;NULL;NULL;NULL;NULL
+12;U. D.1;UFFICIO DEL DIRETTORE1;0;NULL;S;54;U4;4^ SEZIONE - NATO/UE;4;NULL;176;NGD;Nucleo Gestione Documentazione;1;NULL
+12;U. D.1;UFFICIO DEL DIRETTORE1;0;NULL;S;54;U4;4^ SEZIONE - NATO/UE;4;NULL;177;NSP;Nucleo Sicurezza e Passaporti;1;NULL
+12;U. D.1;UFFICIO DEL DIRETTORE1;0;NULL;S;116;U5;5^ SEZIONE - Coordinamento;6;NULL;191;NGCV;NUCLEO Gestione Certificati di Viaggio;1;NULL
+12;U. D.1;UFFICIO DEL DIRETTORE1;0;NULL;S;116;U5;5^ SEZIONE - Coordinamento;6;NULL;190;NGP;NUCLEO Gestione Presenze;1;NULL
+12;U. D.1;UFFICIO DEL DIRETTORE1;0;NULL;S;117;SPI;SPI - Servizio per la tenuta del Protocollo informatico, della Gestione dei flussi documentali e degli Archivi;7;NULL;NULL;NULL;NULL;NULL;NULL
+11;Dir;DIRETTORE;1;NULL;S;50;Segr. part.;SEGRETERIA PARTICOLARE;0;NULL;NULL;NULL;NULL;NULL;NULL
+11;Dir;DIRETTORE;1;NULL;S;107;SPMP;SERVIZIO - Pianificazione e Monitoraggio Programmi;0;NULL;166;SPMP-1ª Sez.;1^ SEZIONE - Programmazione finanziaria;1;NULL
+11;Dir;DIRETTORE;1;NULL;S;107;SPMP;SERVIZIO - Pianificazione e Monitoraggio Programmi;0;NULL;167;SPMP-2ª Sez.;2^ SEZIONE - Monitoraggio Programmi;2;NULL
+11;Dir;DIRETTORE;1;NULL;S;107;SPMP;SERVIZIO - Pianificazione e Monitoraggio Programmi;0;NULL;165;SPMP-3ª Sez.;3^ SEZIONE - Programmi di Ricerca Tecnologica;3;NULL
+11;Dir;DIRETTORE;1;NULL;S;77;SPP;SERVIZIO - Prevenzione e Protezione dai rischi;0;NULL;NULL;NULL;NULL;NULL;NULL
+11;Dir;DIRETTORE;1;NULL;S;108;SRP;SERVIZIO - Relazioni con il Pubblico;0;NULL;NULL;NULL;NULL;NULL;NULL
+11;Dir;DIRETTORE;1;NULL;S;104;P180;Ufficio di Programma Cooperazione con gli Emirati Arabi Uniti per il programma P180 unmanned;4;NULL;NULL;NULL;NULL;NULL;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;56;SVDA;SEGRETERIA - Vice Direttore Amministrativo;0;NULL;NULL;NULL;NULL;NULL;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;111;SAGL;SERVIZIO - Affari Giuridici e Legali;1;NULL;NULL;NULL;NULL;NULL;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;112;SUR;SERVIZIO - Ufficiale Rogante;2;NULL;NULL;NULL;NULL;NULL;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;113;SCAAG;SERVIZIO - Coordinamento Amministrativo, dell'anticorruzione e gare;3;NULL;179;SG;SEZIONE - Gare;1;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;73;SCEACIG;SERVIZIO - Contabilità Economico-Analitica, Controllo Interno di Gestione;4;NULL;180;SCEA;SEZIONE - Contabilità Economica-Analitica;1;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;72;SCC;Servizio - Contenzioso Contrattuale;5;NULL;NULL;NULL;NULL;NULL;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;70;09;9^ DIVISIONE - Contratti Nazionali ed Esteri;6;NULL;102;9D1S;1^ SEZIONE - Approvvigionamenti nazionali mediante Procedura Negoziata;1;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;70;09;9^ DIVISIONE - Contratti Nazionali ed Esteri;6;NULL;103;9D2S;2^ SEZIONE - Approvvigionamenti nazionali mediante Procedura Concorsuale, Convenzioni CONSIP;2;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;70;09;9^ DIVISIONE - Contratti Nazionali ed Esteri;6;NULL;104;9D3S;3^ SEZIONE - Gestione documentazione contrattuale, Acquisti in Economia e Contratti attivi;3;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;70;09;9^ DIVISIONE - Contratti Nazionali ed Esteri;6;NULL;105;9D4S;4^ SEZIONE - Approvvigionamenti presso ditte estere;4;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;70;09;9^ DIVISIONE - Contratti Nazionali ed Esteri;6;NULL;106;9D5S;5^ SEZIONE - Approvvigionamenti presso Governi ed Agenzie;5;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;70;09;9^ DIVISIONE - Contratti Nazionali ed Esteri;6;NULL;107;9D6S;6^ SEZIONE - Procedure Doganali;6;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;71;10;10^ DIVISIONE - Bilancio e Liquidazione;7;NULL;109;10D1S;1^ SEZIONE - Bilancio e Monitorizzazione di Cassa;1;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;71;10;10^ DIVISIONE - Bilancio e Liquidazione;7;NULL;110;10D2S;2^ SEZIONE - Accreditamenti, Revisioni Prezzo e Conguagli Valuta;2;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;71;10;10^ DIVISIONE - Bilancio e Liquidazione;7;NULL;111;10D3S;3^ SEZIONE - Liquidazione nazionale e gestione Perenti;3;NULL
+13;VA;VICE DIRETTORE AMMINISTRATIVO;2;NULL;S;71;10;10^ DIVISIONE - Bilancio e Liquidazione;7;NULL;168;4 sez;4^ SEZIONE - Pagamenti esteri;4;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;74;ST;SEGRETERIA - Vice Direttore Tecnico;0;NULL;NULL;NULL;NULL;NULL;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;120;Supporto;Personale a contratto - supporto ditta;0;;NULL;NULL;NULL;NULL;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;79;SSI;SERVIZIO - Sistema Informatico;1;NULL;119;2U3Sk;3^ SEZIONE - Coordinamento Tecnico e Standardizzazione;3;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;118;SAI;SERVIZIO Affari Industriali;2;NULL;192;SAI1S;1^ Sezione Costi Orari;1;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;118;SAI;SERVIZIO Affari Industriali;2;NULL;193;SAI2S;2^ Sezione Affari Generali;1;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;75;VDT1U;1° UFFICIO - Omologazione e Assicurazione di Qualità;3;NULL;112;1U1S;1^ SEZIONE - Omologazione Aeromobili Ala Fissa;1;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;75;VDT1U;1° UFFICIO - Omologazione e Assicurazione di Qualità;3;NULL;113;1U2S;2^ SEZIONE - Omologazione Aeromobili Difesa Aerea e CTOL/STOVL;2;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;75;VDT1U;1° UFFICIO - Omologazione e Assicurazione di Qualità;3;NULL;114;1U3S;3^ SEZIONE - Omologazione Aeromobili Ala Rotante;3;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;75;VDT1U;1° UFFICIO - Omologazione e Assicurazione di Qualità;3;NULL;115;1U4S;4^ SEZIONE - Omologazione Aeromobili APR;4;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;75;VDT1U;1° UFFICIO - Omologazione e Assicurazione di Qualità;3;NULL;116;1U5S;5^ SEZIONE - Assicurazione Qualità Governativa;5;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;76;VDT2U;2° UFFICIO - Normativa Tecnica Generale, immatricolazione e formazione;4;NULL;117;2U1S;1^ SEZIONE - Normativa Generale;1;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;76;VDT2U;2° UFFICIO - Normativa Tecnica Generale, immatricolazione e formazione;4;NULL;120;2U4S;4^ SEZIONE - Formazione e Addestramento;4;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;76;VDT2U;2° UFFICIO - Normativa Tecnica Generale, immatricolazione e formazione;4;NULL;186;VDT2U5S;5^ SEZIONE - RVSM e Materiali Pericolosi;6;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;100;UPCI;UFFICIO DI PROGRAMMA - Cooperazione internazionale;5;NULL;NULL;NULL;NULL;NULL;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;103;UPCAT;UFFICIO DI PROGRAMMA - Coordinamento Attività Certificative per l'inserimento degli aeromobili in teatro operativo;6;NULL;NULL;NULL;NULL;NULL;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;105;UPSIF;UFFICIO DI PROGRAMMA - Coordinamento attività di inserimento in servizio del sistema SIFAD;7;NULL;NULL;NULL;NULL;NULL;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;106;UPRI;UFFICIO DI PROGRAMMA - Ritorni industriali;8;NULL;NULL;NULL;NULL;NULL;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;102;UPAC;UFFICIO DI PROGRAMMA - Revisione e modifica della Direttiva analisi costi industriali SGD-G-023;9;NULL;NULL;NULL;NULL;NULL;NULL
+16;VT;VICE DIRETTORE TECNICO;3;NULL;S;101;UPQCI;UFFICIO DI PROGRAMMA - Qualificazione comune internazionale MDOA F2000;10;NULL;NULL;NULL;NULL;NULL;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;121;Supporto;Personale a contratto - supporto ditta;0;;NULL;NULL;NULL;NULL;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;83;1R1D;1^ DIVISIONE - Velivoli da Combattimento e Difesa Aerea;1;NULL;126;1D1S;1^ SEZIONE - Velivoli da Difesa Aerea;1;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;83;1R1D;1^ DIVISIONE - Velivoli da Combattimento e Difesa Aerea;1;NULL;127;1D2S;2^ SEZIONE - Velivoli da Comabattimento;2;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;83;1R1D;1^ DIVISIONE - Velivoli da Combattimento e Difesa Aerea;1;NULL;128;1D3S;3^ SEZIONE - Produzione e Supporto Logistico Iniziale;3;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;83;1R1D;1^ DIVISIONE - Velivoli da Combattimento e Difesa Aerea;1;NULL;129;1D4S;4^ SEZIONE - Normativa Tecnica;4;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;83;1R1D;1^ DIVISIONE - Velivoli da Combattimento e Difesa Aerea;1;NULL;194;1D5S;5^ SEZIONE - Velivoli 6^ generazione;4;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;85;1R2D;2^ DIVISIONE - Velivoli STOVL-CTOL e addestramento;3;NULL;130;2D1S;1^ SEZIONE - Velivoli di Proiezione STOVL/CTOL - Fattori Contrattuali;1;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;85;1R2D;2^ DIVISIONE - Velivoli STOVL-CTOL e addestramento;3;NULL;131;2D2S;2^ SEZIONE - Velivoli di Proiezione STOVL/CTOL - Fattori Tecnico Programmatici;2;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;85;1R2D;2^ DIVISIONE - Velivoli STOVL-CTOL e addestramento;3;NULL;132;2D3S;3^ SEZIONE - Velivoli da Addestramento;3;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;85;1R2D;2^ DIVISIONE - Velivoli STOVL-CTOL e addestramento;3;NULL;133;2D4S;4^ SEZIONE - Normativa Tecnica;4;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;86;1R3D;3^ DIVISIONE - Velivoli da Trasporto Tattico, Strategico e Speciali;4;NULL;134;3D1S;1^ SEZIONE - Velivoli da Trasporto Tattico e Strategico;1;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;86;1R3D;3^ DIVISIONE - Velivoli da Trasporto Tattico, Strategico e Speciali;4;NULL;135;3D2S;2^ SEZIONE - Velivoli da Trasporto Passeggeri e Collegamento;2;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;86;1R3D;3^ DIVISIONE - Velivoli da Trasporto Tattico, Strategico e Speciali;4;NULL;136;3D3S;3^ SEZIONE - Velivoli Speciali;3;NULL
+17;1R;1° REPARTO - Aeromobili ad Ala Fissa;4;NULL;S;86;1R3D;3^ DIVISIONE - Velivoli da Trasporto Tattico, Strategico e Speciali;4;NULL;137;3D4S;4^ SEZIONE - Velivoli Aerorifornitori e Pattugliamento;4;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;87;2RSegr.;SEGRETERIA - 2° Reparto;0;NULL;NULL;NULL;NULL;NULL;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;88;4D;4^ DIVISIONE - A.P.R. Aerobersagli e Mezzi Spaziali;1;NULL;138;4D1S;1^ SEZIONE - A.P.R. Strategici e Leggeri;1;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;88;4D;4^ DIVISIONE - A.P.R. Aerobersagli e Mezzi Spaziali;1;NULL;139;4D2S;2^ SEZIONE - A.P.R. Tattici, Mini e Micro;2;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;88;4D;4^ DIVISIONE - A.P.R. Aerobersagli e Mezzi Spaziali;1;NULL;140;4D3S;3^ SEZIONE - Mezzi Spaziali e Aerobersagli;3;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;88;4D;4^ DIVISIONE - A.P.R. Aerobersagli e Mezzi Spaziali;1;NULL;141;4D4S;4^ SEZIONE - Normativa Tecnica;4;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;89;5D;5^ DIVISIONE - Aeromobili ad Ala Rotante multiruolo e imbarcati;2;NULL;142;5D1S;1^ SEZIONE - Aeromobili Imbarcati;1;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;89;5D;5^ DIVISIONE - Aeromobili ad Ala Rotante multiruolo e imbarcati;2;NULL;143;5D2S;2^ SEZIONE - Elicotteri Multiruolo Terrestri;2;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;89;5D;5^ DIVISIONE - Aeromobili ad Ala Rotante multiruolo e imbarcati;2;NULL;144;5D3S;3^ SEZIONE - Elicotteri Multiruolo Navali;3;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;89;5D;5^ DIVISIONE - Aeromobili ad Ala Rotante multiruolo e imbarcati;2;NULL;145;5D4S;4^ SEZIONE - Elicotteri Multiruolo Interforze;4;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;89;5D;5^ DIVISIONE - Aeromobili ad Ala Rotante multiruolo e imbarcati;2;NULL;146;5D5S;5^ SEZIONE - Normativa Tecnica;5;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;90;6D;6^ DIVISIONE - Aeromobili ad Ala Rotante da trasporto, tattici e speciali;3;NULL;147;6D1S;1^ SEZIONE - Elicotteri Speciali;1;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;90;6D;6^ DIVISIONE - Aeromobili ad Ala Rotante da trasporto, tattici e speciali;3;NULL;148;6D2S;2^ SEZIONE - Elicotteri da Trasporto e Tattici;2;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;90;6D;6^ DIVISIONE - Aeromobili ad Ala Rotante da trasporto, tattici e speciali;3;NULL;150;6D3S;3^ SEZIONE - Elicotteri da Addestramento e Collegamento;3;NULL
+18;2R;2° REPARTO - Aeromobili ad Ala Rotante, APR e Mezzi Spaziali;5;NULL;S;90;6D;6^ DIVISIONE - Aeromobili ad Ala Rotante da trasporto, tattici e speciali;3;NULL;151;6D4S;4^ SEZIONE - Normativa Tecnica;4;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;91;3R Segr;SEGRETERIA - 3° Reparto;0;NULL;NULL;NULL;NULL;NULL;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;94;SCL;SERVIZIO - Carbolubrificanti;1;NULL;161;SCL1S;1^ SEZIONE - Consip, Carbolubrificanti e Lubrificanti Autotrazione e Navale;1;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;94;SCL;SERVIZIO - Carbolubrificanti;1;NULL;162;SCL2S;2^ SEZIONE - Carbolubrificanti e Lubrificanti Avio;2;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;94;SCL;SERVIZIO - Carbolubrificanti;1;NULL;183;SCL3S;3^ SEZIONE - Gestione Oleodotti;2;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;92;7D;7^ DIVISIONE - Avionica e Armamento di bordo;2;NULL;152;7D1S;1^ SEZIONE - Sistemi missilistici A/A e A/S;1;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;92;7D;7^ DIVISIONE - Avionica e Armamento di bordo;2;NULL;153;7D2S;2^ SEZIONE - Armamento di Caduta, di Lancio, di Bordo e di Autoprotezione;2;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;92;7D;7^ DIVISIONE - Avionica e Armamento di bordo;2;NULL;154;7D3S;3^ SEZIONE - Avionica generale, Radar, Sistemi di navigazione e comunicazione;3;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;92;7D;7^ DIVISIONE - Avionica e Armamento di bordo;2;NULL;155;7D4S;4^ SEZIONE - Sistemi di auto-protezione, ricognizione, guida all'armamento ed elettroottici;4;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;92;7D;7^ DIVISIONE - Avionica e Armamento di bordo;2;NULL;156;7D5S;5^ SEZIONE - Sistemi di Simulazione, Pianificazione e SW di Bordo;5;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;92;7D;7^ DIVISIONE - Avionica e Armamento di bordo;2;NULL;188;6S-ESS;6^ SEZIONE - Equipaggiamenti di Sicurezza e Salvataggio;6;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;92;7D;7^ DIVISIONE - Avionica e Armamento di bordo;2;NULL;189;7S-PRSTAB;7^ SEZIONE - Programmi di Ricerca e Sviluppo Tecnologico per Armamento di Bordo;7;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;93;8D;8^ DIVISIONE - Motori per Aeromobili;4;NULL;157;8D1S;1^ SEZIONE - Sistemi propulsivi del tipo Turbogetto per Aeromobili ad ala fissa;1;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;93;8D;8^ DIVISIONE - Motori per Aeromobili;4;NULL;159;8D2S;2^ SEZIONE - Sistemi propulsivi per elicotteri;2;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;93;8D;8^ DIVISIONE - Motori per Aeromobili;4;NULL;160;8D3S;3^ SEZIONE - Sistemi propulsivi del tipo Motoelica/Turboelica per Aeromobili ad ala fissa e RPV;3;NULL
+19;3R;3° REPARTO - Sistemi elettroavionici, motori, armamento di bordo, sistemi di salvataggio e carbolubrificanti_;6;NULL;S;93;8D;8^ DIVISIONE - Motori per Aeromobili;4;NULL;174;4^ Sezione;4^ SEZIONE - Normativa Tecnica;4;NULL
+22;n/a;n/a;100;NULL;S;119;n/a;n/a;100;NULL;195;n/a;n/a;100;NULL
