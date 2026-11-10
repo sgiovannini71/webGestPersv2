@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Db.cs" />
+    <Compile Include="Data\PersonaleEsternoCaselleRepository.cs" />
     <Compile Include="Data\PersonaleRepository.cs" />
     <Compile Include="Data\PersonaleWriteRepository.cs" />
     <Compile Include="Data\TabelleGestioneRepository.cs" />
